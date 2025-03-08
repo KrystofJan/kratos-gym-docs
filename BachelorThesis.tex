@@ -1,0 +1,87 @@
+% Nejprve uvedeme tridu dokumentu s volbami
+\documentclass[czech,bachelor]{diploma}
+% Dalsi doplnujici baliky maker
+\usepackage[autostyle=true,czech=quotes]{csquotes} % korektni sazba uvozovek, podpora pro balik biblatex
+\usepackage[backend=biber, style=iso-numeric, alldates=iso]{biblatex} % bibliografie
+\usepackage{dcolumn} % sloupce tabulky s ciselnymi hodnotami
+\usepackage{subfig} % makra pro "podobrazky" a "podtabulky"
+\usepackage[cpp]{diplomalst}
+\usepackage{dirtree}
+
+% Zadame pozadovane vstupy pro generovani titulnich stran.
+\ThesisAuthor{Jan-Kryštof Zahradník}
+
+\ThesisSupervisor{Ing. Lukáš Klein}
+
+\CzechThesisTitle{Navržení a implementace rezervačního systému pro posilovny s ohledem na maximální kapacitu, typ tréninku a využití nástrojů}
+
+\EnglishThesisTitle{Design and Implementation of a Booking System for Gyms with Regard to Maximum Capacity, Type of Training and Use of Tools}
+
+\SubmissionYear{2024-2025}
+
+\ThesisAssignmentFileName{ThesisSpecification_ZAH0089.pdf}
+
+% Pokud nechceme nikomu dekovat makro zapoznamkujeme.
+\Acknowledgement{Rád bych zde poděkoval vedoucímu mé práce Ing. Lukáši Kleinovi za pomoc a cenné rady při tvorbě této bakalářské práce}
+
+\CzechAbstract{Tato bakalářská práce se zaměřuje na návrh a implementaci rezervačního systému pro posilovny s důrazem na správu kapacity, typů tréninků a dostupných zdrojů. Výsledkem je webová aplikace, která uživatelům umožňuje rezervovat jednotlivé posilovací stroje v konkrétním čase, navrhovat vhodné stroje odpovídající jejich tréninkovým plánům a optimalizovat čas tréninku na základě zvoleného počátečního času.}
+
+\CzechKeywords{typografie; \LaTeX; diplomová práce}
+
+\EnglishAbstract{This bachelor's thesis focuses on the design and implementation of a reservation system for gyms, emphasizing efficient management of capacity, training types, and available resources. The result is a web application that allows users to book individual exercise machines at specific times, suggest suitable machines that align with their training plans, and optimize training schedules based on the selected start time.}
+
+\EnglishKeywords{typography; \LaTeX; master thesis}
+
+\AddAcronym{API}{Application Programming Interface}
+\AddAcronym{REST API}{Representational State Transfer API}
+\AddAcronym{JS}{JavaScript}
+\AddAcronym{TS}{TypeScript}
+\AddAcronym{PK}{Primární klíč}
+\AddAcronym{FK}{Cizí klíč}
+
+\addbibresource{biblatex-examples.bib}
+\addbibresource{coffee.bib}
+
+% Novy druh tabulkoveho sloupce, ve kterem jsou cisla zarovnana podle desetinne carky
+\newcolumntype{d}[1]{D{,}{,}{#1}}
+
+
+% Zacatek dokumentu
+\begin{document}
+
+% Nechame vysazet titulni strany.
+\MakeTitlePages
+
+% Jsou v praci obrazky? Pokud ano vysazime jejich seznam a odstrankujeme.
+% Pokud ne smazeme nasledujici dve makra.
+\listoffigures
+\clearpage
+
+% Jsou v praci tabulky? Pokud ano vysazime jejich seznam a odstrankujeme.
+% Pokud ne smazeme nasledujici dve makra.
+\listoftables
+\clearpage
+
+% A nasleduje text zaverecne prace.
+\input{Chapters/Introduction.tex}
+\input{Chapters/Technical Analysis/TechnicalAnalysis.tex}
+\input{Chapters/Theoretical analysis/TheoreticalAnalysis.tex}
+\input{Chapters/Infrastructure/Infrastructure.tex}
+\input{Chapters/Implementation/Implementation.tex}
+\input{Chapters/Testing and CICD/TestingAndCICD.tex}
+\input{Chapters/Retrospective.tex}
+\input{Chapters/Conclusion.tex}
+
+% Seznam literatury
+\printbibliography[title={Literatura}, heading=bibintoc]
+
+% Prilohy
+\appendix
+%\input{Chapters/Appendix1.tex}
+%\input{Chapters/Appendix2.tex}
+
+% Priloha vlozena primo do hlavniho LaTeX souboru. Ne vsechny prilohy je nutne mit ve zvlastnich souborech.
+%\chapter{Dlouhý zdrojový kód}
+%\lstinputlisting[label=src:CppExternal,caption={Dlouhý zdrojový kód v jazyce C++ načtený s externího souboru}]{SourceCodes/ArraySortingAlgorithms.cpp}
+
+\end{document}

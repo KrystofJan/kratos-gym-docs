@@ -1,0 +1,90 @@
+\chapter{Teoretická analýza}
+Tato kapitola se věnuje teoretickému návrhu systému, jehož jádrem je optimalizace rezervací tréninkových časů a přístrojů v posilovně. Hlavním cílem je definovat algoritmické principy pro tři klíčové funkce.
+
+\begin{enumerate}
+    \item \textbf{Doporučení přístrojů} - Systém musí umět doporučovat posilovací přístroje na základě ostatních již zvolených zařízení.
+    \item \textbf{Generování času pro trénink} - Systém musí dokázat vytvořit časové alokace pro jednotlivé přístroje vycházející ze zadaného počátečního času, s ohledem na jejich kapacitní limity
+    \item \textbf{Doporučení nejbližších časů} - Při manuální konfiguraci časových oken u jednotlivých přístrojů je nutné průběžně detekovat kolize s ostatními rezervacemi a na základě této analýzy doporučit nejbližší volné časové okno stejné délky
+\end{enumerate}
+
+Před vysvětnením je potřeba ustanovit si jistou terminologii, která nám popíše určité věci.
+\begin{enumerate}
+    \item Rezervace - Jedná se o konkrétní rezervaci, je vázaná na datum, plán a uživatele, může mít asociaci s trenérem
+    \item Plán - Plán reprezentuje tréninkový plán, který zákazník bude provádět, jsou zde zahrnuty přístroje, které bude využívat, časová okna s nimi spojené, typ tréninku a pod.
+    \item Přístroj - Konkrétní přístroj na posilování
+\end{enumerate}
+
+Nyní je potřeba si definovat postup, jakým bude uživatel interagovat s těmito algoritmy. Vytvoření rezervace bude probíhat skrze konfigurační formulář, který bude wrapovat tento následující postup, viz Activity diagram procesu vytvoření rezervace. \ref{fig:ReservationActionDiagram}
+\begin{itemize}
+  \item Zákazník vyplní základní informace ohledně rezervace.
+    \begin{itemize}
+      \item Mezi základní informace se započítává například datum rezervace, název plánu a počet osob, atd.
+    \end{itemize}
+  \item Zákazník může vybrat trenéra
+  \item Systém vyhledá všechny přístroje dostupné v posilovně
+  \item Zákazník vybírá přístroje dokud nevybere všechny které chce.
+    \begin{itemize}
+        \item Pokud zákazník vybere více než nějaký určený počet přístrojů, tak systém začne doporučovat přístroje, jež jsou spojeny s typem tréninku, který v dosavadním výběru přístroju převažuje. V tomto kroku se odehrává \textbf{Doporučení přístrojů}
+    \end{itemize}
+  \item Zákazník si zvolí zda chce konfigurovat časová okna manuálně
+      \begin{itemize}
+        \item Pokud ano, tak systém zablokuje možnost vybírat vybrat pořadí. Zákazník si vybere počáteční čas a systém vygeneruje jednotlivá časová okna, které následně doplní do jednotlivých položek.Zde se odehrává \textbf{Generování času pro trénink}. Dále může časová okna ještě poupravit. 
+        \item Pokud ne, tak uživatel zvolí pořadí přístrojů. Následně zákazník volí časová okna pro jednotlivé přístroje. 
+    \end{itemize}
+    
+  \item Během manuálního vkládání/upravování časových oken systém kontroluje, zda v zadaném časovém okně je kolize s jinou rezervací. Pokud je, tak systém vyhledá nejbližší volné stejné délky před a po zvoleném. Zde se bude odehrávat \textbf{Doporučení najbližšího dostupného času}.
+  \item Nakonec zákazník zvolí dodatečné informace, jako například kategorie tréninku atd.
+\end{itemize}
+
+\begin{figure}
+    \centering
+    \includegraphics[width=.5\textwidth]{Figures/Bakalarka, rezervace.jpg}
+    \caption{Action diagram procesu vytvoření rezervace}
+    \label{fig:ReservationActionDiagram}
+\end{figure}
+
+\section{Doporučení přístrojů}
+Doporučení přístrojů na základě jejich typu je vcelku jednoduché. Nejprve je nutné určit pro jaký typ tréninku se budou přístroje doporučovat. To zajistíme tak, že budeme mít v informaci o možných typech tréninku někde uloženou, konkrétně v databázi. 
+
+Systém tedy projde každý vybraný přístroj, zjistí jaké typy tréninku jsou na přístroji možné a ten, který se vyskytuje ve všech bude považovat za cílový trénink, který zákazník chce navolit. Na základě naleznutého typu tréninku tedy systém najde všechny přístroje, který tento tyt sdílí a podle jejich populaliry vybere několik nejpopulárnějších. 
+
+Problémy s kolizemi v tuto chvíli není potřeba u doporučování přístrojů řešit. Systém nebude mít ve chvíli kdy bude zákazník přístroje vybírat kontext o tom, kdy se trénink bude odehrávat.
+
+\section{Doporučení najbližšího dostupného času}
+Doporučení nejbližšího času je již komplexnější. Problematika spočívá v detekci kolizí a v hledání časového okna, které je stejné délky a nekoliduje s žádnou další rezervací a to jak před zvoleným časovým oknem, tak i po něm.
+
+Uživatel bude schopen si také povolit, nebo zakázat kolize na jednotlivých přístrojích. Například je pro systém zádoucí mít neustále povolené kolize na činkách, jelikož jich je mnoho. Kolize se budou řešit úplně stejně jako případy bez kolizí jen s tím rozdílem, že u kolizí ještě bude systém kontrolovat kapacitu. Pokud bude souběžný počet lidí na jednom přístroji v mezi jeho kapacity, tak systém považuje toto časové okno jako volné, pokud ne, tak ho považuje jako zabrané. Uživatel bude na existující kolizi upozorněn, ale nebude se jednat o stav blokující ho ve vytvoření rezervace.
+
+Systém nejprve načte existující rezervace daného přístroje pro zvolené datum a extrahuje z nich počáteční a koncové časy všech rezervovaných časových oken. Tato okna jsou následně seřazena vzestupně podle počátečního času, čímž vzniká chronologický přehled obsazených intervalů. Před zahájením analýzy systém předpokládá, že uživatelem zadané časové okno splňuje základní validaci – počáteční čas je chronologicky před koncovým časem.
+
+Následně systém porovná vstupní časové okno s uspořádaným seznamem rezervací a identifikuje první interval, který s ním koliduje (překrývá se). akmile je kolize detekována, algoritmus vyhledá nejbližší volný interval mezi již existujícími rezervacemi před konfliktním oknem, jehož délka odpovídá nebo přesahuje požadovanou dobu trvání. Stejný postup aplikuje i na intervaly za konfliktním oknem, čímž získá dvě potenciální alternativy: první volné okno před a druhé po původně zvoleném čase.
+
+Pro lepší představu se lze odkázat na diagram \ref{fig:ReservationTimeSuggestionDiagram}. Každá bílá buňka reprezentuje zabraná časová okna, červená ty, se kterými zadaný interval koliduje, šedá ty, která jsou moc krátké a zelená ty, které jsou vhodné pro doporučení. 
+
+\begin{figure}
+    \centering
+    \includegraphics[width=1\textwidth]{Figures/time_suggestion_diagram.jpg}
+    \caption{Diagram nalezení nejbližších volných časových oken}
+    \label{fig:ReservationTimeSuggestionDiagram}
+\end{figure}
+
+\section{Generování času pro trénink}
+Generování tréninků je z předem zmíněných možností asi nejkomplexnější. Problematika spočívá v tom, že ne jen že musíme najít vhodné časy, ale opět řešit kolize a to vše aby byl trénink bez prázdných časových oken, ve kterých zákazník nemá zarezervovaný nějaký přístroj. 
+
+Nejprve je potřeba systém v určitých směrech omezit. Například bude velmi složité a neefektivní nechat uživatele zvolit pořadí přístrojů, v ru chvíli by ne jen nabylo řešení na komplexitě, ale také by to omezilo systém v ohledu flexibility, což má být jeden z jeho klíčových aspektů. Zároveň nám zablokování možnosti měnit pořadí otevírá dveře k více flexibilnímu řešení u kterého může pořadí přístrojů měnit sám systém tak, aby výsledný trénink byl časově efektivní a zabránil tvorbě mezer.
+
+Dále systém umožní uživateli si vypnout, či zapnout kolize s ostatními lidmi, co kolize zapnuty mají. Tyto kolize jsou řešeny podobně jako u Doporučení najbližšího dostupného času. Nakonec dostaneme od uživatele počáteční čas. 
+
+Generování časových oken bude řešeno pomocí Grafů s neváženými směrovými hranami, kde každý vrchol grafu nám reprezentuje časové okno. Výsledkem je několik průchodů tohoto grafu (možnosti pro uživatele). Graf budeme skládat podle zadaných paramerů, průchod grafem je neměnný. 
+
+\subsection{Průchod grafem}
+Na průchod grafem se nabízí spousta možností, jako jsou například: DFS, BFS, Dijkstra a pod. Tyto algoritmy se dají využít na spoustu usecasů, ale pro naši implementaci si vystačíme s vlastním řešením.
+
+Průchod grafem bude řešen pomocí rekurze. Princip rozhodování dalšího vrcholu bude jednoduchý. Následující vrchol bude první prvek z množiny vzestupně seřazené podle koncového času, který nebyl dosavaď navštíven a zároveň neobsahuje přístroj, jenž byl navštíven a časově se do vrcholu vejde.
+
+\subsubsection{TODO: Obrazek}
+
+\subsection{Tvorba Grafu}
+Data v grafu
+
+bude hodně záležet na vstupních parametrech. 

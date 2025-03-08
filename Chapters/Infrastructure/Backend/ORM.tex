@@ -1,0 +1,31 @@
+\subsection{ORM}
+Pro implementaci ORM jsem se rozhodl využít kombinaci reflexe a dekorátorů. Toto řešení mi umožnilo výrazně zjednodušit vývoj jednoduchých CRUD(tj. Create, Read, Update, Delete) operací pro jednotlivé koncové body. Výhodou tohoto přístupu je, že stačí definovat model, opatřit ho vhodnými dekorátory, a samotné mapování na SQL se následně provádí automaticky díky reflexi.
+
+Konkrétní implementační detaily budou popsány v následující části.
+
+\subsubsection{Dekorátory}
+Dekorátory umožňují rozšířit funkcionalitu běžných tříd pomocí metadat nebo různých nadstaveb, které „dekorují“ danou třídu nebo její atributy\cite{TSDecorators}. V kontextu této implementace se dekorátory používají k mapování objektových modelů na databázové tabulky a sloupce a máme  několik typů dekorátorů:
+\begin{description}
+    \item[Table] 
+    Tento dekorátor slouží k přiřazení názvu tabulky dané třídě. Pomocí reflexe je název tabulky propojen s třídou, která reprezentuje, což usnadňuje práci při mapování modelů na SQL.
+    \item[PrimaryKey]  
+Dekorátor, který specifikuje primární klíč tabulky. Aplikace jej využívá pro identifikaci a práci s primárním klíčem záznamů v databázi.
+
+\item[Column] 
+Tento dekorátor rozšiřuje jednotlivé atributy třídy o jejich odpovídající název sloupce v databázi. Na pozadí také přiřazuje specifické datové struktury, která má daný atribut.
+
+\item[ForeignKey] 
+Dekorátor určený pro označení cizího klíče. Do dekorátoru se předává typ reprezentující odkazovanou tabulku, přičemž atribut, na který je dekorátor aplikován, musí být stejného typu. Navíc je nutné, aby odkazovaný typ dědil z obecné třídy \texttt{Model}.
+
+\item[UnInsertable]
+Označuje atributy, které mají být při vkládání dat do databáze ignorovány. Je využíváno pro zamezení vložení atributu, jejichž hodnota je nastavována skrze základní hodnoty v databázi. Například create\_date v tabulce account.
+
+\item[DifferentlyNamedForeignKey]  
+Používá se v případě, kdy atribut reprezentuje cizí klíč, ale jeho název se liší od názvu primárního klíče v odkazované tabulce. Tento dekorátor řeší situace, kdy databázová struktura neodpovídá standardnímu pojmenování. Například mějme cizí klíč \texttt{customer\_id}, který odkazuje na tabulku \texttt{account}, jenže PK má v dané tabulce název \texttt{account\_id}
+
+\item[UnUpdatable]  
+Podobně jako \texttt{UnInsertable} tento dekorátor zajišťuje, že atributy označené tímto dekorátorem budou ignorovány při požadavku aktualizaci dat.
+
+\item[ManyToMany]
+Dekorátor, který označuje atributy reprezentující vztah typu M:N (mnoho na mnoho) mezi dvěma tabulkami. Tento dekorátor umožňuje automatické zpracování spojovacích tabulek a souvisejících operací.
+\end{description}

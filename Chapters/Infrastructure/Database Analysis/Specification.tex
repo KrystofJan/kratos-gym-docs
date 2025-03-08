@@ -1,0 +1,23 @@
+% \subsection{Specifikace zadání}
+
+\subsection{Vize}
+Navrhovaný systém pro posilovnu bude zajišťovat správu rezervací, uživatelů a vybavení posilovny. Hlavním účelem systému je rezervační konfigurátor, jehož primární funkcí je alokace dostupných přístrojů. Systém integruje algoritmus pro dynamické doporučení optimálních časových intervalů na základě vytíženosti zařízení a přizpůsobený výběr přístrojů na bázi typu tréninku.
+
+\subsection{Role}
+Rolí systém podporuje několik. Uživatele rozdělujeme do tří skupin.
+
+\begin{description}
+    \item[Zákazník] je role s nejnižšími právy. Zákazník bude representovat osobu, která si v systému bude chtít vytvořit rezervaci
+    \item[Trenér] je role která má rozšítěný přístup k systému, je to obyčejný uživatel, který může být přiřazen k rezervaci. Asociaci s rezervací může ale sám zrušit. V zadání tuto roli nemáme popsanou, tudíž se pro tento typ účtu nebude v rámci této bakalářské práce implementovat logika navíc. Prozatím bude fungovat jako obyčejný uživatel, kterého lze přidat k rezervaci jako trenéra.
+    \item[Zaměstnanec] je role, která má přístup k administraci, je to role s nejvyššími právy a je schopna přidávat, manipulovat a mazat veškerá data. Bude také mít přístup ke všem statistikám a výpisům.
+\end{description}
+Tyto skupiny nám zajistí integritu přístupu dat a jejich manipulaci. Pro tento systém není potřeba více rolí, jelikož Zaměstnanců, kteří jsou pověřeni manipulací dat a přístupu do administrace je malé množství, tudíž téměř neomezený přístup k datům má nízké chybové dopady.
+
+\subsection{Popis}
+Systém bude primárně zaměřen na chod posilovny, což zahrnuje správu rezervací přístrojů na konkrétní časy a potenciálně i sledování výdělků. Pro zajištění těchto specifikací je potřeba se ujistit, že systém tyto specifikace pokrývá. Systém je postaven na třech pilířích.
+
+\begin{description}
+    \item[Uživatelské účty] Většina záznamů v systému vyžaduje uchovávání informací o uživateli. Samotná autentizace a související procesy, jako je ověřování uživatelů, budou řešeny mimo rámec databáze pomocí externích služeb. Nicméně je stále potřeba ukládat dodatečné informace o uživatelích přímo v databázi. Pro tento účel systém obsahuje jednoduchou tabulku s názvem account, která slouží k uchování základních informací o uživatelských účtech, jako jsou identifikátory nebo další nezbytné údaje.
+    \item[Rezervace a plán] Jak napovídá samotný název, tabulka rezervace reprezentuje uživatelovu rezervaci, která je vždy vázána na konkrétní den. Každá rezervace je spojená s uživatelem a určitým plánem a může mít přiřazeného trenéra. Plán představuje komplexnější strukturu několika tabulek, které uchovávají podrobné informace o rezervaci, například konkrétní přístroje, časové rozvrhy a další detaily. Plán je tvořen následujícími tabulkami: plan, plan\_category a plan\_machine.
+    \item[Přístroje a kategorie] Tabulka machine reprezentuje skutečné posilovací přístroje dostupné v posilovně. Každý přístroj má definované základní informace, jako jsou jeho název a popis, a je spojen s určitým plánem. Vztah mezi přístroji a plánem je typu N:M (mnoho na mnoho), což umožňuje asociaci jednoho přístroje s více plány a naopak. Tento vztah je dále rozšířen o dodatečné informace, jako je počet opakování (repetic), počet sérií (setů) a časové intervaly, zahrnující počáteční a koncový čas cvičení. Dále jsou s každým plánem a přístrojem asociovány kategorie, které jsou uchovávány v tabulce plan\_category. Tyto kategorie umožňují lépe strukturovat a organizovat přístroje a plány podle typu cvičení nebo jiných kritérií, což usnadňuje správu systému, zvyšuje jeho přehlednost a poskytne možnost doporučit Přístroje podle předem vybraných.
+\end{description}

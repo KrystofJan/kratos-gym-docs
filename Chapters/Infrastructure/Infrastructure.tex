@@ -1,0 +1,17 @@
+\chapter{Infrastruktura}
+
+\section{Úvod}
+S výjimkou databázového systému je aplikace rozdělena do dvou oddělených vrstev: frontend a backend. Rozhodnutí nevyužít fullstack framework, jako je například Nuxt, je poměrně jednoduché. Tyto dvě vrstvy mohou fungovat zcela odděleně, což umožňuje využití různých verzí technologií a zajišťuje větší flexibilitu při správě a nasazování jednotlivých částí systému.
+
+Toto rozdělení přináší také zásadní výhody z hlediska budoucí rozšiřitelnosti. Aplikace se dá snadno přizpůsobit pro různé platformy – například ji lze rozšířit o mobilní nebo desktopovou aplikaci, aniž by to narušilo stávající strukturu. Díky této modularitě je architektura systému robustnější a lépe připravená na budoucí požadavky. Navzdory rozdělení je projekt uložený v jednom git repozitáři.
+
+\input{Chapters/Infrastructure/Database Analysis/DatabaseAnalysis}
+
+\input{Chapters/Infrastructure/Backend/Backend}
+
+\section{Frontend}
+Frontend je uživatelské rozhraní aplikace, které interaguje s uživatelem a zobrazuje data z backendu. Je napsán ve Vue.js, což je moderní JavaScriptový framework pro vytváření uživatelských rozhraní.
+
+\subsubsection{Struktura}
+
+\subsubsection{Příklad}

@@ -1,0 +1,112 @@
+Tato kapitola popisuje technologie použité ve vývoji této bakalářské práce a vysvětluje jejich funkci v rámci jednotlivých vrstev. Ústřední roli v celém ekosystému hraje JavaScript, který se stal jádrem celého vývojového procesu. Tato volba vycházela z mnoha později uvedených důvodů, ale i přes to, že odpovídá široce rozšířené praxi, byla klíčová pro volbu ostatních technologií.
+
+\section{JavaScript}
+JavaScript je základním stavebním kamenem projektu. Byla v něm i napsána úplně první verze celého backendu. V projektu byl JavaScript použit z několika důvodů:
+
+\begin{description}
+  \item[Rozšířená komunita] \hfill \\ Javascript má obrovskou komunitu vývojářů, která nabízí bohatou podporu a nespočet open-source knihoven a frameworků, což usnadňuje a zrychluje vývoj.
+  \item[Nativní podpora ve webových prohlížečích] \hfill \\ I v dnešní době, kdy máme mnohem více možností, je javascript jazyk stále "Jazykem webu" a běží nativně ve všech moderních prohlížečích, což z něj činí téměř nezbytnou součást vývoje webových aplikací. Pro jednoduchost a jednotu mezi vrstvami dávalo smysl používat jeden jazyk.
+\end{description}
+
+Použití JavaScriptu umožnilo rychlý start a flexibilní rozvoj projektu. Samozřejmě, že jeho volba s sebou přinesla i některé problémy a úskalí, se kterými jsem se musel v průběhu projektu vypořádat. Tyto přešlapy si později rozebereme v retorspektivě.
+
+V pozdější části implementace došlo k rozhodnutí přejít na TypeScript, což bylo důležitým krokem směrem k lepší struktuře a stabilitě kódu.
+
+\subsection{TypeScript}
+Je to open-source programovací jazyk vyvíjen společností Microsoft \cite{enwiki:1261773908}, který je postavený ja JavaScriptu a rozšiřuje ho o typovou kontrolu\cite{goldberg2022learning}. TypeScript poskytuje výhodu především ve větších projektech, kde je potřeba zajistit stabilitu a minimalizovat chyby spojené s dynamickým typováním JavaScriptu.
+
+Statická typová kontrola v TypeScriptu umožňuje odhalit chyby již během psaní kódu a nabízí větší jistotu při refactoringu \cite{enwiki:1258410189}. Přestože TypeScript stále generuje běžný JavaScript, přináší strukturálnější a bezpečnější vývojový proces, což významně zlepšilo kvalitu kódu v tomto projektu.
+
+\section{PostgreSQL}
+PostgreSQL je open-source objektově-relační databázový systém, který byl v tomto projektu zvolen jako hlavní databázové řešení \cite{enwiki:1262241967}. Tento databázový systém je známý svou stabilitou, rozšiřitelností a podporou pokročilých funkcí, jako jsou uložené procedury, transakce nebo plná podpora ACID (Atomicita, Konzistence, Izolace, Trvalost). PostgreSQL nabízí škálovatelnost a spolehlivost, které jsou klíčové pro náročné webové aplikace.
+
+\section{Node.js}
+Aby program běžel, tak většína programovaních jazyků má nějaké běhové prostředí (Ang. Runtime environment) \cite{enwiki:1245152116}. Při vývoje JavaScriptu byl vytvořen "JavaScript engine" pro webový prohlížeč Netscape Navigator. V podstatě se jednalo o velmi jednoduchý interpreter. Později se tento engine se později vyvinul v SpiderMonkey, který je dodnes používán v prohlížeči Mozilla Firefox\cite{enwiki:1256640147}. Alternativa pro chromium se nazývá V8.
+
+Node.js poskytuje běhové prostředí pro JavaScript mimo prohlížeč. Vznikl v roce 2009 a umožnil použití JavaScriptu pro serverové aplikace. Je postaven na enginu V8 a díky tomu je velmi výkonný a efektivní.\cite{enwiki:1262522147}
+
+Node.js je dnes největším běhovým prostředím pro JavaScript na světě. Kromě možnosti tvorby serverových aplikací poskytuje ekosystém balíčků spravovaný přes npm (Node Package Manager), což je největší repozitář softwarových balíčků na světě.\cite{enwiki:1262522147}
+
+Node má samozřejmě spoustu moderních alternativ jako je bun, deno a další, ale považován za standard pro vývoj aplikací v JS/TS. 
+
+\section{Express.js}
+Express.js je minimalistický webový framework pro Node.js, který byl použit pro tvorbu aplikačního programového rozhraní (API). Express usnadňuje práci s HTTP metodami a nabízí jednoduchou, ale flexibilní strukturu pro vývoj REST API\cite{enwiki:1258184667}.
+
+Express umožnuje jednoduchou, ale transparentní práci s HTTP metodami z něho tvoří oblíbenou volbu pro vývoj awebových aplikací všech velikostí. V tomto projektu funguje jako komunikační most mezi frontendem a databází.
+
+\section{Vue.js}
+Vue.js je progresivní open-source framework pro tvorbu uživatelských rozhraní. Byl zvolen pro frontend tohoto projektu díky své jednoduchosti a flexibilitě. Vue.js 
+umožňuje rychlý vývoj komponent, které jsou zabaleny do velmi přehledné struktury.
+
+Hlavní silnou stránkou Vue.js je jeho reaktivní systém správy stavu. Tento mechanismus automaticky sleduje závislosti mezi daty a rozhraním, což eliminuje potřebu explicitního řízení aktualizací.
+%Mozna odstranit?%
+Zatímco frameworky jako React spoléhají na imperativní manipulaci se stavem pomocí hooků (např. useState), Vue.js umožňuje přímou mutaci reaktivních proměnných deklarovaných pomocí ref() nebo reactive(). Tento rozdíl redukuje boilerplate kód a snižuje riziko chyb spojených s nesprávnou synchronizací stavu. Následující ukázka demonstruje implementaci čítače v Reactu s použitím hooku useState:
+\begin{lstlisting}
+function Example() {
+  const [count, setCount] = useState(0);
+  return (
+    <div>
+      <p>You clicked {count} times</p>
+      <button onClick={() => setCount(count + 1)}>
+        Click me
+      </button>
+    </div>
+  );
+\end{lstlisting}
+Zde je nutné explicitně deklarovat jak stavovou proměnnou (count), tak odpovídající setter (setCount). Každá změna stavu vyžaduje volání setter funkce, což vede k přerenderování komponenty. Ačkoli tento model poskytuje granularitu kontroly, vyžaduje od vývojáře důsledné oddělení stavové logiky a prezentace. Naproti tomu stejná funkcionalita ve Vue.js využívá reaktivní referenci:
+\begin{lstlisting}
+<script setup>
+import { ref } from "vue";
+const counter = ref(0);
+</script>
+
+<template>
+  <div>
+    <p>You clicked {{ counter }} times</p>
+    <button @click="counter++">Click me</button>
+  </div>
+</template>
+\end{lstlisting}
+Proměnná counter je obalena proxy objektem, který automaticky detekuje změny prostřednictvím getterů a setterů generovaných funkcí ref(). Mutace hodnoty přímým přiřazením (counter++) spouští reaktivní aktualizaci DOM bez nutnosti manuálního volání setterů.
+
+\section{Tailwind CSS}
+Tailwind je framework pro CSS, který výrazně zrychluje stylování uživatelského rozhraní. Namísto tradičních předpřipravených komponent nabízí Tailwind množství utility tříd, které lze kombinovat a vytvářet tak design přímo v HTML komponentách.
+
+Použití Tailwindu v tomto projektu umožnilo vytvořit flexibilní a rychle upravitelný design bez nutnosti psát samotné CSS.
+
+\section{Shadcn}
+Shadcn je sada komponent pro výhradně pro React a Tailwind, která zjednodušuje integraci uživatelského rozhraní do aplikací. Umožňuje rychlé nasazení a styling komponent pomocí Tailwind CSS, čímž snižuje čas potřebný na vývoj frontendu. Jedná se o předem nastylované Radix komponenty.
+
+Narozdíl od ostatních sad komponent jako například Bootstrap, shadcn naimportuje kód komponent přímo do projektu, tudíž jsou plně upravitelné.
+
+Vue komunita vytvořila svou neoficiální verzi Shadcn s názvem Shadcn-vue. 
+
+\section{Clerk}
+Clerk je autentizační a správcovská služba uživatelů, která zjednodušuje implementaci přihlašování, registrací a správy uživatelů v aplikacích. Nabízí snadnou integraci s frontendovými technologiemi, jako je Vue.js
+
+V tomto projektu je Clerk použit pro autentikaci, což zajišťuje bezpečný přístup k aplikaci.
+
+\section{Zod}
+Zod je knihovna pro validaci dat. Umožňuje definovat schémata, která popisují tvar dat, a následně je validovat.
+
+V tomto projektu je Zod využíván v validace dat přicházející ze shadcn formulářů. Tímto zajišťuje konzistenci a správnost dat na serverové straně.
+
+\section{Docker}
+Docker je nástroj, který slouží k vývoji, distribuci a spouštění aplikací. Umožňuje oddělit aplikace od infrastruktury, což usnadňuje a zrychluje nasazování softwaru. Díky Dockeru se dá infrastruktura spravovat podobně jako aplikace. Pomocí metod, které Docker nabízí pro testování, nasazování a distribuci kódu, se dá zkrátit čas mezi napsáním kódu a jeho spuštěním v ostrém provozu\cite{a2024_what}.
+
+V rámci tohoto projektu Docker poskytuje efektivní a rychlé řešení, které umožňuje vývoj a distribuci aplikace napříč různými platformami.
+
+\section{Git / Github}
+Git je distribuovaný systém pro správu verzí, který umožňuje efektivní sledování změn a správu různých verzí souborů. Je široce využíván díky své flexibilitě a podpoře týmové spolupráce, čímž se stal standardem mezi verzovacími systémy \cite{enwiki:1261616505}.
+
+V na tomto projektu byl Git nasazen od počátku jako klíčový nástroj pro verzování. Pro sdílení a správu repozitáře byl zvolen GitHub, populární platforma rozšiřující Git o funkce pro ukládání, správu a spolupráci v cloudu. Díky svému intuitivnímu prostředí se GitHub stal oblíbeným řešením pro projekty všech velikostí \cite{enwiki:1262043674}.
+
+\section{CICD - Github actions}
+GitHub Actions je platforma pro kontinuální integraci a doručování (CI/CD), která umožňuje automatizovat procesy, jako jsou sestavení, testování a nasazování aplikací. S GitHub Actions lze vytvářet pracovní postupy, které automaticky sestaví a otestují každou pull requestu v repozitáři, nebo nasadí sloučené pull requesty přímo do produkce\cite{githubinc_2024_understanding}.
+
+Při vývoji rezervačního systému byly github actions především použity pro vytvoření docker kontejneru a pro spuštění testů
+
+\section{Python a pytest}
+Python je vysoce úrovňový interpretovaný skriptovací jazyk, který se vyznačuje unikátním způsobem strukturování kódu. Namísto tradičního používání složených závorek pro seskupování bloků kódu využívá Python bílých znaků (whitespace), což přispívá k jeho čitelnosti a jednoduchosti \cite{enwiki:1262860862, enwiki:1259453401}.
+
+V rámci tohoto projektu je Python využit pro vývoj API testů, přičemž byl využit framework pytest. Pytest je vcelku jednoduchý a s kombinací s možností rychlého vývoje v Pythonu nám toto teechnologické rozhodnutí umožnilo opravdu rychlý vývoj jednoduchých testů.

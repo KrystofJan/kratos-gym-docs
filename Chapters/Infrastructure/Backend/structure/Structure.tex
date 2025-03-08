@@ -1,0 +1,85 @@
+
+\subsection{Struktura}
+Struktura projektu prošla několika výraznými změnami. S každou iterací systém nabýval na komplexitě a více strádal na přehlednosti, což vedlo k rozhodnutí provést kompletní přepsání backendu. Toto rozhodnutí vedlo k výraznému zlepšení přehledu a jednoduchosti systému. Podrobné poznámky k procesu refactoringu a jednotlivým iteracím jsou uvedeny v následujících částech textu.
+
+Aktuální backendová architektura je koncipována jako přehledně strukturované řešení s explicitním důrazem na logické uspořádání komponent. Její organizace, založená na seskupování zdrojů dle koncových bodů (např. rezervace, uživatelský účet, atd.), místo tradičního rozdělení podle funkcí (např. service, controller, atd.)
+Kořenový adresář je uspořádán následujícím způsobem:
+\input{Chapters/Infrastructure/Backend/structure/FileTree}
+\subsection{Root složka}
+\begin{description}
+    \item[db] 
+    Zde se ukládají SQL scripty pro vytvoření databáze, vkládání testovacích dat další podobné scripty.
+    \item[tests]  
+    Zde jsou uloženy testy napsány v pythonu pomocí knihovny pytest. Stručný popis testování můžete nalést v kapitole "Testy a CICD"
+    \item[src] 
+    V této složce se nachází veškerá logika aplikace, která je podrobně popsána níže.
+\end{description}
+
+\subsection{Složka src}
+Složka src centralizuje veškerou logiku Express.js HTTP serveru a je strukturována do následujících klíčových modulů:
+\begin{description}
+    \item[database] 
+    Složka database obsahuje logiku specifickou pro ORM a obecné databázové operace. Jsou zde definovány nástroje, jako například výše zmíněné dekorátory pro mapování dat. Nachází se zde také typy reprezentující odpovědi z databáze, což zjednodušuje práci při manipulaci s daty.
+    \item[endpoints]
+    Každý koncový bod v projektu obsahuje následující soubory: controller, error-handler, model, routes a service. V některých případech může obsahovat i část database, která je zodpovědná za specifické databázové operace, jako jsou volání procedur nebo složité transakce.
+    \item[errors] 
+    Složka errors obsahuje základní error handler, ze kterého vycházejí ostatní handlery. Dále obsahuje definici typu CodedError, což je vlastní typ chyby obsahující kód chyby a odpovídající hlášku. Součástí je také ErrorCode, což je výčet chyb, které mohou nastat.
+    \item[request-utility] 
+    Složka request-utility obsahuje definice těl HTTP odpovědí, které se vrací z controllerů. Patří sem například:
+    CreatedResponse pro úspěšné POST požadavky.
+    DeletedResponse pro úspěšné DELETE požadavky.
+    \item[router] 
+    Router definuje všechny HTTP cesty, které API nabízí, a volá specifické routery pro jednotlivé endpointy.
+    \item[utils] 
+    Složka utils obsahuje pomocné funkce a typy, které usnadňují práci. Je zde například typ IDictionary (typová definice mapy pro libovolné datové typy), funkce safeAwait (funkce pro zjednodušení práce s try-catch. Umožňuje práci s chybami v podobném stylu jako v jazyce Go, což přispívá k přehlednosti kódu), definici loggeru (využívá PINO knihovnu) a pod.
+    \item[app.ts] 
+    Soubor app.ts slouží jako vstupní bod aplikace. Jeho hlavní funkcí je vytvoření instance frameworku ExpressTs
+\end{description} 
+
+\subsection{Endpoints / Koncové body}
+V další části popíšeme strukturu modulů a na příkladech ukážeme tok dat od rout přes aplikační logiku k databázi a zpět ke klientovi:
+
+\subsection{model}
+Reprezentuje data vrácená v odpovědi. Model využívá dekorátory, které definují mapování mezi daty v modelu a databází. Jedná se o třídu, která dědí z obecného modelu.
+
+\lstinputlisting[label=src:BERoutes,caption={Příklad implementace endpoint modelu}]{SourceCodes/foo.model.ts}
+
+Tento příklad demonstruje definiční datový model Foo s následující strukturou:
+\begin{description}
+    \item[FooId (typ number)] automaticky generovaný primární klíč tabulky
+    \item[Bar (typ Bar)] cizí klíč definující 1:1 asociaci s tabulkou Bar.
+\end{description} 
+
+Model zároveň ilustruje aplikaci dekorátorů (např. @PrimaryKey, @ForeignKey, @Column, atd.), které rozšiřují funkcionalitu modelu o metadata nutná pro obecné požadavky na databázi. 
+
+Následující příklad bude popisován dále v popisech dalších bodech.
+\subsection{routes}
+Obsahuje definice HTTP cest, které se volají v globálním routeru. Tyto definice obvykle pouze směrují požadavky na příslušný controller.
+
+\lstinputlisting[label=src:BERoutes,caption={Příklad implementace endpoint routů}]{SourceCodes/foo.routes.ts}
+
+V tomto příkladu nejprve vytvoříme instanci express.js routeru. Následovně definujeme jednotlivé koncové body, které budou pro uživatele dostupné. Tyto definice pouze volají příslušný controller, kterému předává informace o requestu (dotazu) a o požadované response (odpovědi)
+
+\subsection{controller} 
+Zajišťuje logiku volání příslušných služeb (service) a sestavuje tělo HTTP odpovědi na základě výsledků těchto služeb.
+
+\lstinputlisting[label=src:BEControllers,caption={Příklad implementace endpoint controllerů}]{SourceCodes/foo.controller.ts}
+
+Kontroler FooController využívá safeAwait pro asynchronní error handling bez try/catch, inspirovaný Go jazykem. Metoda FindById nejprve načte entitu Foo, poté asociovaný Bar, a standardizuje odpovědi přes OkResponse/FailedResponse.
+
+\subsection{service}
+Úloha service je na základě vstupních dat vrátit data namapovaná na požadovaný typ. Tyto data je možné získat z databáze, nebo jiných služeb.
+
+\lstinputlisting[label=src:BEServices,caption={Příklad implementace endpoint service}]{SourceCodes/foo.service.ts}
+
+Příklad FooService ukazuje, jak metoda GetFooById využívá BasicQueryDatabase pro komunikaci s databází a safeAwait ke zpracování chyb bez nutnosti zanořených try/catch bloků. Surová data z dotazu jsou transformována do instance třídy Foo pomocí explicitního mapování, které zajišťuje validaci a typovou bezpečnost.
+
+\subsection{database}
+Pokud nejsou obecné operace pro práci v databázi pro potřebnou akci dostatečné, lze vytvořit instance databáze, která se od obecného řešení odvíjí, ale zároveň implementuje specifickou logiku vyžadovanou danými požadavky.
+
+\lstinputlisting[label=src:BEServices,caption={Příklad implementace endpoint service}]{SourceCodes/bd-select.ts}
+
+SelectSpecific je jedna z funkcí třídy BasicQueryDatabase, která využívá metadata navázaná na objekt pomocí dekorátorů. Jak lze vidět funkce se převážne jen stará o sestavení SQL dotazu, vrácení získaných dat a uzavření spojení s databází.
+
+\subsection{error-handler}
+Slouží jako mapper, který na základě vrácených chyb sestavuje odpovídající HTTP odpovědi. Pod pokličkou se jedná o hash mapu, která obsahuje typy errorů se status kódy. Je volán z controlleru.
