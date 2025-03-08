@@ -1,6 +1,8 @@
 \subsection{ORM}
 Pro implementaci ORM jsem se rozhodl využít kombinaci reflexe a dekorátorů. Toto řešení mi umožnilo výrazně zjednodušit vývoj jednoduchých CRUD(tj. Create, Read, Update, Delete) operací pro jednotlivé koncové body. Výhodou tohoto přístupu je, že stačí definovat model, opatřit ho vhodnými dekorátory, a samotné mapování na SQL se následně provádí automaticky díky reflexi.
 
+Důvodem rozhodnutí implementace vlastního ORM byla snaha o minimalizaci externích knihoven a jiných závislostí na straně backendu. Tento přístup poskytuje řadu výhod, například: lepší kontrolu nad kódem i jeho kvalitou, jednoznačnou zodpovědnost za případné chyby a mnohé další.
+
 Konkrétní implementační detaily budou popsány v následující části.
 
 \subsubsection{Dekorátory}

@@ -53,13 +53,13 @@ Problémy s kolizemi v tuto chvíli není potřeba u doporučování přístroj�
 \section{Doporučení najbližšího dostupného času}
 Doporučení nejbližšího času je již komplexnější. Problematika spočívá v detekci kolizí a v hledání časového okna, které je stejné délky a nekoliduje s žádnou další rezervací a to jak před zvoleným časovým oknem, tak i po něm.
 
-Uživatel bude schopen si také povolit, nebo zakázat kolize na jednotlivých přístrojích. Například je pro systém zádoucí mít neustále povolené kolize na činkách, jelikož jich je mnoho. Kolize se budou řešit úplně stejně jako případy bez kolizí jen s tím rozdílem, že u kolizí ještě bude systém kontrolovat kapacitu. Pokud bude souběžný počet lidí na jednom přístroji v mezi jeho kapacity, tak systém považuje toto časové okno jako volné, pokud ne, tak ho považuje jako zabrané. Uživatel bude na existující kolizi upozorněn, ale nebude se jednat o stav blokující ho ve vytvoření rezervace.
+Uživatel bude schopen si také povolit, nebo zakázat kolize na jednotlivých přístrojích. Například je pro systém žádoucí mít neustále povolené kolize na činkách, jelikož jich je mnoho. Kolize se budou řešit úplně stejně jako případy bez kolizí, jen s tím rozdílem, že u kolizí ještě bude systém kontrolovat kapacitu. Pokud bude souběžný počet lidí na jednom přístroji v mezích jeho kapacity, tak systém považuje toto časové okno jako volné; pokud ne, tak ho považuje jako zabrané. Uživatel bude na existující kolizi upozorněn, ale nebude se jednat o stav blokující ho ve vytvoření rezervace.
 
 Systém nejprve načte existující rezervace daného přístroje pro zvolené datum a extrahuje z nich počáteční a koncové časy všech rezervovaných časových oken. Tato okna jsou následně seřazena vzestupně podle počátečního času, čímž vzniká chronologický přehled obsazených intervalů. Před zahájením analýzy systém předpokládá, že uživatelem zadané časové okno splňuje základní validaci – počáteční čas je chronologicky před koncovým časem.
 
-Následně systém porovná vstupní časové okno s uspořádaným seznamem rezervací a identifikuje první interval, který s ním koliduje (překrývá se). akmile je kolize detekována, algoritmus vyhledá nejbližší volný interval mezi již existujícími rezervacemi před konfliktním oknem, jehož délka odpovídá nebo přesahuje požadovanou dobu trvání. Stejný postup aplikuje i na intervaly za konfliktním oknem, čímž získá dvě potenciální alternativy: první volné okno před a druhé po původně zvoleném čase.
+Následně systém porovná vstupní časové okno s uspořádaným seznamem rezervací a identifikuje první interval, který s ním koliduje (překrývá se). Jakmile je kolize detekována, algoritmus vyhledá nejbližší volný interval mezi již existujícími rezervacemi před konfliktním oknem, jehož délka odpovídá nebo přesahuje požadovanou dobu trvání. Stejný postup aplikuje i na intervaly za konfliktním oknem, čímž získá dvě potenciální alternativy: první volné okno před a druhé po původně zvoleném čase.
 
-Pro lepší představu se lze odkázat na diagram \ref{fig:ReservationTimeSuggestionDiagram}. Každá bílá buňka reprezentuje zabraná časová okna, červená ty, se kterými zadaný interval koliduje, šedá ty, která jsou moc krátké a zelená ty, které jsou vhodné pro doporučení. 
+Pro lepší představu se lze odkázat na diagram \ref{fig:ReservationTimeSuggestionDiagram}. Každá bílá buňka reprezentuje zabraná časová okna, červená ty, se kterými zadaný interval koliduje, šedá ty, která jsou moc krátká, a zelená ty, které jsou vhodné pro doporučení. 
 
 \begin{figure}
     \centering
@@ -69,22 +69,44 @@ Pro lepší představu se lze odkázat na diagram \ref{fig:ReservationTimeSugges
 \end{figure}
 
 \section{Generování času pro trénink}
-Generování tréninků je z předem zmíněných možností asi nejkomplexnější. Problematika spočívá v tom, že ne jen že musíme najít vhodné časy, ale opět řešit kolize a to vše aby byl trénink bez prázdných časových oken, ve kterých zákazník nemá zarezervovaný nějaký přístroj. 
+Generování tréninků je z předem zmíněných možností asi nejkomplexnější. Problematika spočívá v tom, že nejenže musíme najít vhodné časy, ale opět řešit kolize a to vše, aby byl trénink bez prázdných časových oken, ve kterých zákazník nemá zarezervovaný nějaký přístroj. 
 
-Nejprve je potřeba systém v určitých směrech omezit. Například bude velmi složité a neefektivní nechat uživatele zvolit pořadí přístrojů, v ru chvíli by ne jen nabylo řešení na komplexitě, ale také by to omezilo systém v ohledu flexibility, což má být jeden z jeho klíčových aspektů. Zároveň nám zablokování možnosti měnit pořadí otevírá dveře k více flexibilnímu řešení u kterého může pořadí přístrojů měnit sám systém tak, aby výsledný trénink byl časově efektivní a zabránil tvorbě mezer.
+Nejprve je potřeba systém v určitých směrech omezit. Například bude velmi složité a neefektivní nechat uživatele zvolit pořadí přístrojů, v tu chvíli by ne jen nabylo řešení na komplexitě, ale také by to omezilo systém v ohledu flexibility, což má být jeden z jeho klíčových aspektů. Zároveň nám zablokování možnosti měnit pořadí otevírá dveře k více flexibilnímu řešení, u kterého může pořadí přístrojů měnit sám systém tak, aby výsledný trénink byl časově efektivní a zabránil tvorbě mezer.
 
-Dále systém umožní uživateli si vypnout, či zapnout kolize s ostatními lidmi, co kolize zapnuty mají. Tyto kolize jsou řešeny podobně jako u Doporučení najbližšího dostupného času. Nakonec dostaneme od uživatele počáteční čas. 
+Dále systém umožní uživateli si vypnout, či zapnout kolize s ostatními lidmi, co kolize zapnuté mají. Tyto kolize jsou řešeny podobně jako u Doporučení nejbližšího dostupného času. Nakonec dostaneme od uživatele počáteční čas. 
 
-Generování časových oken bude řešeno pomocí Grafů s neváženými směrovými hranami, kde každý vrchol grafu nám reprezentuje časové okno. Výsledkem je několik průchodů tohoto grafu (možnosti pro uživatele). Graf budeme skládat podle zadaných paramerů, průchod grafem je neměnný. 
+Generování časových oken bude řešeno pomocí grafů s neváženými směrovými hranami, kde každý vrchol grafu nám reprezentuje časové okno. Výsledkem je několik průchodů tohoto grafu (možností pro uživatele). Graf budeme skládat podle zadaných parametrů, průchod grafem je neměnný. 
+\subsection{Tvorba Grafu}
+
+\subsection{Tvorba vrcholů}
+Data v grafu vycházejí z využití vybraných přístrojů pro daný den počínaje uživatelem zadaným časem. Je nutné v datech zachovat i ty záznamy, které mají kolize vypnuté, jelikož budou důležité pro tvorbu vrcholů.
+
+Jakmile systém získá záznamy o vytížení přístrojů, je potřeba tato data upravit do požadovaného formátu. Tento formát musí obsahovat počáteční a koncový čas časového okna, který reprezentuje. Dále je potřeba  zachovat informace o přístroji a rezervaci. Dále tato data systém upraví ještě jednou a to tím způsobem, že si doplní záznamy o mezerách, tj. časová okna, přes která nikdo nemá vytvořenou rezervaci pro daný přístroj. Tyto záznamy tedy nebudou obsahovat rezervaci. 
+
+Tyto data budeme tedy následovně upravovat na základě vstupních hodnot poskytnutých uživatelem. Konkrétně, za uživatel povolí kolize s ostatními uživateli, kteří tuto možnost také povolili.
+
+Pokud uživatel kolize nepovolí, tak se nabízí zcela jednoduché řešení. Z předem připravených dat jednoduše odstraníme ty možnosti, které obsahují rezervaci, tj. někdo přes toto časové okno již rezervaci má. Tyto data budou tedy výslednými vrcholy pro tento scénář.
+
+V případě, že uživatel kolize povolí, bude problém o něco složitější. Nejprve z právě těch záznamů, které obsahují rezervaci a zároveň mají kolize povolené, systém musí danou rezervaci odstranit, tímto se z těchto záznamů stanou předem zmíněné mezery. Rezervace, které mají kolize zakázané, musí v datech zůstat. Dále systém projde všechny tyto mezery a spojí je dohromady viz obrázek. % TODO
+Tímto se nám zmenší počet vrcholů, přes které systém poté bude procházet. Až po spojení mezer systém odstraní záznamy, jež obsahují zbývající rezervace.
+
+Výsledkem obou případů jsou volná časová okna, která jsou pro danou konfiguraci dostupná, právě tyto hodnoty budou hodnotou vrcholů, jež v grafu budou.
+
+\subsection{Tvorba vrcholů}
+Pro tvorbu vytvoření hran v grafu se řídí dvěma základními podmínkami.
+
+Následující podmínky využívají 2 vrcholy, vrchol A je právě ten vrchol, ze kterého má směřovat hrana a vrchol B je kandidát na vrchol do kterého hrana směřuje.
+\begin{enumerate}
+    \item Koncový čas vrcholu B musí být větší, než počáteční čas vrcholu A.
+    \item Přístroj asociovaný s vrcholem A nesmí být stejný jako přístroj asociovaný s vrcholem B
+\end{enumerate}
+
+Pokud tyto dvě podmínky systém aplikuje na všechna nalezená časová okna, tak výsledkem budou potřebné hrany, skrz které se bude algoritmus pro průchod pohybovat.
+
 
 \subsection{Průchod grafem}
-Na průchod grafem se nabízí spousta možností, jako jsou například: DFS, BFS, Dijkstra a pod. Tyto algoritmy se dají využít na spoustu usecasů, ale pro naši implementaci si vystačíme s vlastním řešením.
+Na průchod grafem se nabízí spousta možností, jako jsou například: DFS, BFS, Dijkstra a pod. Tyto algoritmy se dají využít na spoustu use-case, ale pro naši implementaci si vystačíme s vlastním řešením.
 
-Průchod grafem bude řešen pomocí rekurze. Princip rozhodování dalšího vrcholu bude jednoduchý. Následující vrchol bude první prvek z množiny vzestupně seřazené podle koncového času, který nebyl dosavaď navštíven a zároveň neobsahuje přístroj, jenž byl navštíven a časově se do vrcholu vejde.
+Průchod grafem bude řešen pomocí rekurze. Princip rozhodování dalšího vrcholu bude jednoduchý. Následující vrchol bude první prvek z množiny vzestupně seřazené podle koncového času, který nebyl dosud navštíven a zároveň neobsahuje přístroj, jenž byl navštíven a časově se do vrcholu vejde.
 
 \subsubsection{TODO: Obrazek}
-
-\subsection{Tvorba Grafu}
-Data v grafu
-
-bude hodně záležet na vstupních parametrech. 
