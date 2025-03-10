@@ -2,6 +2,64 @@
 V kontextu již definovaného implementačního rámce (technologický stack, datové toky, architektura) přistupujeme k analýze klíčových algoritmických komponent systému: doporučování časů přístrojů, generování časů pro tréninky způsoby a řešení kolizí.
 
 \section{Doporučení přístrojů}
+Jak již bylo popsáno v kapitole \textbf{Teoretická analýza}, tak koncept doporučení přístrojů není příliž složitý. Co se praktické implementace týče, tak je to obdobné.
+
+\subsection{Frontend}
+Nejprve je potřeba aby uživatel přístroje vybral. K tomu poslouží řada checkboxů, které tyto přístroje budou reprezentovat. Checkboxy mohou působit jako ne příliš dobré řešení, ale pro demostrační účely této bakalářské práce to bude stačit.
+
+Ve výsledku budou přístroje uloženy v poli. Toto pole bude monitorováno pomocí computed property, která v sobě bude uchovávat informaci ohledně nejčastějším id kategorie nalezeným v těhto přístrojích.
+
+Computed properties (česky: Vypočítané vlastnosti) jsou vlastnosti, které jsou vypočtené z jiných reakticvích proměnných. Jejich největší výhoda spočívá v sebekontrolování jejich závislostí, t.j. jakmile se jakákoli reaktivní proměnná, na které je vypočítáná vlastnost závislá změní, hodnota této vlastnosti je přepočítá. Zde tato vlastnost nabývá podoby proměnné mostFrequentCategoryId. Computed property je definována pomocí definice getter funkce. Tato computed property bude sloužit při následnému volání na API, které se uskuteční pomocí watcheru.
+
+Podobně jako u computed vlastností je watch způsob jakým lze reagovat na změnu reaktivní proměnné, ale s tím rozdílem, že watcher nedrží žádnou hodnotu. Watcher pouze sleduje reaktivní proměnnou a při její změně zavolá callback funkci. Watcher by se dal jednoduše vysvětlit jako event handler pro reaktivní proměnné ve Vue.js.
+
+\begin{lstlisting}
+const selectedMachines = ref<Machine[]>([])
+const recommendMachines = ref<Machine[]>([])
+
+const mostFrequentCategoryId = computed(() => {
+  // Find the and return the categoryId with the most occurences
+});
+
+watch(
+  mostFrequentCategoryId,
+  async (newId) => {
+    // Get the recommended machines from the API and assign them to recommendedMachines
+  },
+  { deep: true }
+)
+\end{lstlisting}
+
+Kombinací těchto dvou konceptů docílíme menší frekvenci dotazů na API, čož umožnuje menší zatížení backendu a menší potřebu překreslovat doporučené přístroje na Frontendu, což by bylo způsobeno neustálým přepisováním hodnot, jež jsou v template propsány.
+
+\subsection{Backend}
+Ze strany backendu se jedná o dotaz na databázi. Tento dotaz je poněkud komplikovanější. Má více vstupních parametrů a zároveň jeho implementace požaduje vnořené příkazy. Jak již bylo zmíněno v popisu databáze, tak pro tyto případy bylo učiněno rozhodnutí takovéto příkazy zaobalit do procedury přímo v databázi. V implementaci API se tedy volá pouze tato procedura.
+
+V následující ukázce se nachází volání této procedury.
+\begin{lstlisting}
+const result: Machine[] = await this.sql<Machine[]>`
+    SELECT * 
+    FROM get_machines_in_same_category(${id})
+`
+\end{lstlisting}
+
+Volaná procedura tedy obsahuje pouze následující SQL dotaz. Zde se systém od databáze požaduje odlišné přístroje, jež mají 
+
+\begin{lstlisting}
+SELECT DISTINCT m.*
+FROM machine m
+JOIN machine_exercise_type met ON m.machine_id = met.machine_id
+JOIN exercise_type et ON met.exercise_type_id = et.exercise_type_id
+WHERE et.category_id = (
+    SELECT et.category_id
+    FROM machine_exercise_type met
+    JOIN exercise_type et ON met.exercise_type_id = et.exercise_type_id
+    WHERE met.machine_id = input_machine_id
+    LIMIT 1
+)
+AND m.machine_id != input_machine_id
+ORDER BY m.popularity_score DESC; -- Sorting by popularity_score in descending order
+\end{lstlisting}
 
 \section{Doporučení najbližšího dostupného času}
 
