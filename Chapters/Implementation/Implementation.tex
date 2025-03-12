@@ -30,12 +30,11 @@ watch(
 )
 \end{lstlisting}
 
-Kombinací těchto dvou konceptů docílíme menší frekvenci dotazů na API, čož umožnuje menší zatížení backendu a menší potřebu překreslovat doporučené přístroje na Frontendu, což by bylo způsobeno neustálým přepisováním hodnot, jež jsou v template propsány.
+Kombinací těchto dvou konceptů docílíme menší frekvenci dotazů na API, čož umožnuje menší zatížení backendu a menší potřebu překreslovat doporučené přístroje na Frontendu, což by bylo způsobeno neustálým přepisováním hodnot reaktivních proměnných, jež jsou v template sekci volány.
 
 \subsection{Backend}
 Ze strany backendu se jedná o dotaz na databázi. Tento dotaz je poněkud komplikovanější. Má více vstupních parametrů a zároveň jeho implementace požaduje vnořené příkazy. Jak již bylo zmíněno v popisu databáze, tak pro tyto případy bylo učiněno rozhodnutí takovéto příkazy zaobalit do procedury přímo v databázi. V implementaci API se tedy volá pouze tato procedura.
 
-V následující ukázce se nachází volání této procedury.
 \begin{lstlisting}
 const result: Machine[] = await this.sql<Machine[]>`
     SELECT * 
@@ -43,9 +42,9 @@ const result: Machine[] = await this.sql<Machine[]>`
 `
 \end{lstlisting}
 
-Volaná procedura tedy obsahuje pouze následující SQL dotaz. Zde se systém od databáze požaduje odlišné přístroje, jež mají 
+Volaná procedura tedy obsahuje pouze následující SQL dotaz. Tento dotaz nám propojuje 3 tabulky. Machine (reprezentuje individuální přístroj, např. Bench, Squat rack, atd.), machine exercise type (reprezentuje N:M vztah mezi cvikem a přístrojem) a exercise type (reprezentuje cvik, např. Dřep, Biceps curl, atd.). Výsledek spojených tabulek je následně profiltrován pomocí vnořeného SQL dotazu, který vyhledává první id kategorie, které přístroj s vloženým id má. Následně se z výsledku předešlé filtrace vyjme přístroj s id v parametru procedury. Nazávěr se data sestupně seřadí podle jejich popularity.
 
-\begin{lstlisting}
+\begin{lstlisting}[language=SQL]
 SELECT DISTINCT m.*
 FROM machine m
 JOIN machine_exercise_type met ON m.machine_id = met.machine_id
@@ -58,9 +57,74 @@ WHERE et.category_id = (
     LIMIT 1
 )
 AND m.machine_id != input_machine_id
-ORDER BY m.popularity_score DESC; -- Sorting by popularity_score in descending order
+ORDER BY m.popularity_score DESC;
 \end{lstlisting}
+Přirozeně se o tomto řešení dá říci, že je zbytečně komplikované a jelikož hledáme nejčastější kategorii na straně frontendu. Toto sebou ale nese jeden problém. Konkrétně se jedná o ten fakt, že doporučení pomocí přístroje nám nabízí více možností z ohledu dalšího rozšíření systému. Dále může jeden přístroj mít více kategorií, tudíž nemůžeme vědět jakou konkrétně chceme najít. Hledání kategorie sloužilo pouze pro vymezení možností v rámci tréninku a ne v rámci individuálních přístrojů.
 
 \section{Doporučení najbližšího dostupného času}
 
+Pro doporučení nejbližšího dostupného času se musí vzít v potaz kolize s jinými rezervacemi, což je problematika, která byla popsaná v teoretické analýze. Co popsáno ale nebylo je způsob jak tuto kolizi nalezneme v reálném čase, t.j. ve chvíli, kdy definujeme časové okno.
+
+\subsection{Hledání kolizí v reálném čase}
+Tuto část rozebíráme v praktické implementaci jelikož je řešení velmi úzce spojené s praktickou implementací na frontendu. 
+
+Jako jednoduché řešení se nabízí po každé změně časového okna poslat dotaz skrze API, který by vrátil počet rezervací s vypnutými kolizemi v daný čas a pokud by byl počet větší, nebo roven jedné, tak bychom časové okno označili jako kolidující. Tento způsob by ale způsobil obrovské množství dotazů na API, což by způsobilo vysoké zatížení backendu. To by se částečně dalo vyřešít využitím WebSockets, nebo podobnými způsoby.
+
+Ačkoli pokusy o funkčnost výše zmíněného řešení jsou lákavé v ohledu na fascinaci s jinými řešeními, nabízí se také mnohem intuitivnější řešení. Při pokročení na krok konfigurace časového okna systém syšle dotaz na backend o aktuální rezervace pro daný den, pro každý vybraný přístroj. Tyto data budou následně používány při validaci jednotlivých časových oken pomocí zod validačních schémat. Pokud systém kolizi při validaci najde, tak zašle dotaz pro vyhledání nejbližších časů pro daný přístroj.
+
+
+\subsection{Backend}
+Na backendu algoritmus pracuje s daty získanými z databáze, která obsahují nejen plány rezervací pro daný přístroj, ale také informace o časových oknech předchozích/následujících rezervací a kapacitních omezeních. Cílem je najít nejbližší volný interval stejné délky jako požadované časové okno, a to buď před první kolidující rezervací, nebo za poslední kolidující rezervací, s ohledem na možnost povolení kolizí.
+
+Data jsou získávána pomocí následujícího sql dotazu:
+\begin{lstlisting}[language=SQL]
+SELECT pm.*,
+  CASE
+    WHEN
+      ((pm.previous_start_time <= pm.end_time AND pm.previous_end_time >= pm.start_time) OR
+      (pm.previous_start_time <= pm.next_end_time AND pm.previous_end_time >= pm.next_start_time) OR
+        (pm.start_time <= pm.next_end_time AND pm.end_time >= pm.next_start_time))
+      AND m.max_people >= SUM(r.amount_of_people) + input_amount_of_people
+  THEN true
+  ELSE false
+END AS can_fit
+FROM get_plan_machines_with_next_and_prev(input_machine_id, input_reservation_date) pm
+  INNER JOIN reservation r ON r.plan_id = pm.plan_id
+  INNER JOIN machine m ON m.machine_id = pm.machine_id
+GROUP BY
+  pm.plan_id, pm.machine_id, pm.can_disturb, pm.start_time, pm.end_time,
+  pm.previous_plan_id, pm.previous_start_time, pm.previous_end_time,
+  pm.next_plan_id, pm.next_start_time, pm.next_end_time,
+  r.amount_of_people, m.max_people;
+END;
+\end{lstlisting}
+Jak si lze všimnout tento SQL dotaz vyhledává výsledky jiné procedury. Vráceným vásledkem této procedury je každá rezervace společně s časovými okny předchozí a následující rezervace.
+Dotaz také zjistí, zda se počet lidí ve vytvářené rezervaci vleze do kolidovaných rezervací s ohledem na kapacitu daného přístroje. Výsledek těhto podmínek je booleanová hodnota can\_fit
+
+Dalším krokem po získání dat z databáze je aplikovat algoritmus implementovaný v metodě \texttt{SuggestTimes}, která se nachází ve třídě \texttt{MachineService}. Tento algoritmus následuje tyto kroky:
+
+\begin{enumerate}
+    \item \textbf{Detekce kolizí}
+	Požadované časové okno a všechny rezervace se převedou na minutovou reprezentaci (např. 14:30 → 870 minut). Kolize se detekuje pomocí intervalové logiky:
+\[
+K \exists \iff \max(t_{\text{1start}}, t_{\text{2start}}) \leq \min(t_{\text{1end}}, t_{\text{2end}})
+\]
+	Kdy \( t_{1} \) je čas pro danou rezervaci a \( t_{2} \) je čas pro žádané časové okno.
+	Výsledkem je seznam \texttt{colidingPlan} s kolidujícími rezervacemi.
+
+    \item \textbf{Výpočet potenciálních časových oken}
+    \begin{itemize}
+    	\item Před kolidující rezervaci: Pokud mezi koncem předchozí rezervace a začátkem aktuální rezervace existuje mezera větší nebo rovna délce požadovaného okna, vypočítá se slot jako \texttt{startInt - duration}.
+    	\item Po kolidující rezervaci: Pokud mezi koncem aktuální rezervace a začátkem následující rezervace existuje dostatečná mezera, vypočítá se slot jako \texttt{endInt}. 
+    \end{itemize}
+
+    \item \textbf{Rekurzivní průchod}
+    Pokud žádný slot není nalezen, algoritmus se rekurzivně zavolá pro předchozí/následující rezervaci. Aby se předešlo zacyklení (např. u kruhových vazeb mezi plány), sleduje již navštívené rezervace pomocí množiny \texttt{visited}.
+\end{itemize}
+
+Tento přístup kombinuje efektivitu (práce s již načtenými daty) s robustností (rekurzivní pokrytí všech možných kolizí). Zároveň respektuje kapacitu a možnost zakázání kolizí jiných rezervací. 
 \section{Generování času pro trénink}
+
+
+\section{Tvorba rezervace}
+Jak již bylo zmíněno, tak rezer
