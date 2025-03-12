@@ -107,7 +107,7 @@ Dalším krokem po získání dat z databáze je aplikovat algoritmus implemento
     \item \textbf{Detekce kolizí}
 	Požadované časové okno a všechny rezervace se převedou na minutovou reprezentaci (např. 14:30 → 870 minut). Kolize se detekuje pomocí intervalové logiky:
 \[
-K \exists \iff \max(t_{\text{1start}}, t_{\text{2start}}) \leq \min(t_{\text{1end}}, t_{\text{2end}})
+K \exists \iff \max(t_{1start}, t_{2start}) \leq \min(t_{1end}, t_{2end})
 \]
 	Kdy \( t_{1} \) je čas pro danou rezervaci a \( t_{2} \) je čas pro žádané časové okno.
 	Výsledkem je seznam \texttt{colidingPlan} s kolidujícími rezervacemi.
