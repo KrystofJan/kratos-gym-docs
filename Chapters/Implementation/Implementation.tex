@@ -103,6 +103,32 @@ Dotaz také zjistí, zda se počet lidí ve vytvářené rezervaci vleze do koli
 
 Dalším krokem po získání dat z databáze je aplikovat algoritmus implementovaný v metodě \texttt{SuggestTimes}, která se nachází ve třídě \texttt{MachineService}. Tento algoritmus následuje tyto kroky:
 
+\begin{lstlisting}
+static async SuggestTimes(
+    machineUsage: MachineUsage[],
+    desiredTimeRange: TimeRange,
+    canDisturb: boolean
+): Promise<Suggestion> {
+    ...
+}
+\end{lstlisting}
+
+Tato funkce příjmá výsledek dotazu na databázi v podobě pole v proměnné \texttt{machineUsage}, \texttt{desiredTimeRange} reprezentující žádáné časové okno a \texttt{canDisturb}, jež značí povolení kolizí. Metoda vrací typ \texttt{Suggestion}.
+
+\texttt{Sugestion} obsahuje 2 časová okna, jedno před kolidujícím a druhé za ním. Typ \texttt{TimeRange} reprentuje časové okno samotné a tvoří jej 2 časové záznamy (Start, End) a booleanová hodnota značící existenci kolize.
+
+\begin{lstlisting}
+interface TimeRange {
+    StartTime: Time
+    EndTime: Time
+    isColiding: boolean
+}
+
+interface Suggestion {
+    PrevSuggestion: TimeRange
+    NextSuggestion: TimeRange
+}
+\end{lstlisting}
 \begin{enumerate}
     \item \textbf{Detekce kolizí}
 	Požadované časové okno a všechny rezervace se převedou na minutovou reprezentaci (např. 14:30 → 870 minut). Kolize se detekuje pomocí intervalové logiky:
@@ -111,20 +137,164 @@ K \exists \iff \max(t_{1start}, t_{2start}) \leq \min(t_{1end}, t_{2end})
 \]
 	Kdy \( t_{1} \) je čas pro danou rezervaci a \( t_{2} \) je čas pro žádané časové okno.
 	Výsledkem je seznam \texttt{colidingPlan} s kolidujícími rezervacemi.
+	
+	V kódu tato část vypadá nějak takto:
+	
+    \begin{lstlisting}
+const colidingPlan = machineUsage
+	.map((x: MachineUsage) => {
+	    const result = mapRes(x)
+	    return findPlanFull(result)
+	})
+	.find((time) => {
+	    const {StartTime, EndTime}  = time
+	    const endTimeInMinutes = EndTime.hour * 60 + EndTime.minute
+	    const startTimeInMinutes = StartTime.hour * 60 + StartTime.minute
+	    const minEndTime =
+		    endTimeInMinutes <= desiredEndInt ? endTimeInMinutes : desiredEndInt
+	    const maxStartTime =
+		    startTimeInMinutes >= desiredStartInt ? startInt : startTimeInMinutes
+	    return maxStartTime <= minEndTime
+	})
+    \end{lstlisting}
 
     \item \textbf{Výpočet potenciálních časových oken}
     \begin{itemize}
-    	\item Před kolidující rezervaci: Pokud mezi koncem předchozí rezervace a začátkem aktuální rezervace existuje mezera větší nebo rovna délce požadovaného okna, vypočítá se slot jako \texttt{startInt - duration}.
-    	\item Po kolidující rezervaci: Pokud mezi koncem aktuální rezervace a začátkem následující rezervace existuje dostatečná mezera, vypočítá se slot jako \texttt{endInt}. 
+    	\item Před kolidující rezervaci: Pokud mezi koncem předchozí rezervace a začátkem aktuální rezervace existuje mezera větší nebo rovna délce požadovaného okna, vypočítá se okno jako \texttt{startTimeInMinutes - duration}.
+    	\item Po kolidující rezervaci: Pokud mezi koncem aktuální rezervace a začátkem následující rezervace existuje dostatečná mezera, vypočítá se okno jako \texttt{endTimeInMinutes}. 
+	
+
+    \begin{lstlisting}
+// Previous suggestion
+if (prevEndTimeInMinutes === null || prevEndTimeInMinutes + duration <= startTimeInMinutes) {
+    const startSuggest = startTimeInMinutes - duration
+    prevSuggestion = createSuggestion(startSuggest, false)
+    prev = prevSuggestion
+}
+
+// Next suggestion
+if (nextStartTimeInMinutes === null || nextStartTimeInMinutes - duration >= endTimeInMinutes) {
+    const startSuggest = endTimeInMinutes
+    nextSuggestion = createSuggestion(startSuggest, false)
+    next = nextSuggestion
+}
+    \end{lstlisting}
     \end{itemize}
 
     \item \textbf{Rekurzivní průchod}
     Pokud žádný slot není nalezen, algoritmus se rekurzivně zavolá pro předchozí/následující rezervaci. Aby se předešlo zacyklení (např. u kruhových vazeb mezi plány), sleduje již navštívené rezervace pomocí množiny \texttt{visited}.
-\end{itemize}
+
+    \begin{lstlisting}
+if (visited.has(item.PlanId)) {
+    return {
+	    PrevSuggestion: realPrev,
+	    NextSuggestion: next,
+    }
+}
+visited.add(item.PlanId)
+
+// Recursive search for previous suggestion
+if (prevSuggestion === null && item.Prev !== null) {
+    const res = machineUsage
+	.filter((y) => y.Plan.PlanId === item.Prev?.PlanId)
+	.map((x: MachineUsage) => {
+	    const result = mapRes(x)
+	    return findPlanFull(result)
+	})[0]
+    if (res) {
+	    const sug = determineClosestTime(res, visited)
+	    prev = sug.PrevSuggestion
+    }
+}
+// Same thing for next suggestion
+    \end{lstlisting}
+\end{enumerate}
 
 Tento přístup kombinuje efektivitu (práce s již načtenými daty) s robustností (rekurzivní pokrytí všech možných kolizí). Zároveň respektuje kapacitu a možnost zakázání kolizí jiných rezervací. 
 \section{Generování času pro trénink}
 
+Poslední z funkcionalit systému je zároveň i ta nejkomplexnější. Nejprve systém musí data z databáze namapovat na potřebné typy pro grafy a následovně je potřeba tento graf vytvořit.
 
-\section{Tvorba rezervace}
-Jak již bylo zmíněno, tak rezer
+\subsection{Získání dat}
+Navydory komplexitě řešení je databázový SQL dotaz vcelku jednoduchý, Jedná se o spojeníData získáme z databáze pomocí následujícího dotazu:
+
+\begin{lstlisting}[language=SQL]
+select * 
+from plan_machine 
+    inner join machine 
+	on plan_machine.machine_id = machine.machine_id
+    inner join reservation
+	on plan_machine.plan_id = reservation.plan_id
+WHERE reservation_time::date = input_reservation_date::date
+AND start_time >= formattedStartTime::time
+And machine.machine_id = ANY(machine_ids)
+ORDER BY start_time, end_time;
+\end{lstlisting}
+Kdy input\_reservation\_date je vložené datum, formattedStartTime je formátovaný počáteční čas a machine\_ids je pole id přístrojů.
+Žádné jiné podmínky není potřeba aplikovat, to by způsobilo chybějící záznamy, které pro vytvoření grafu budeme potřebovat.
+
+\subsection{Tvorba dat}
+Data podle kterých se bude graf vytvářet budou záviset na vstupních parametrech uživatele a získaných datech. Vstupní data nám reprezentuje parametr \texttt{collisions}, který je nepovinný parametr ve query HTTP dotazu. Pokud collisions není vloženo, tak kolize považujeme za povolené. Tento datový set budeme nazývat kolizním, v implementaci máme 2 typy, kolizní a nekolizní, tyto typy jsou definovány pomocí enumu \texttt{DataSetType}.
+
+\begin{lstlisting}
+enum DataSetType {
+    COLLIDING,
+    NON_COLLIDING,
+}
+
+let datasetType =
+    collisions === true
+	? DataSetType.COLLIDING
+	: DataSetType.NON_COLLIDING
+
+if (collisions === undefined) {
+    datasetType = DataSetType.COLLIDING
+}
+\end{lstlisting}
+
+Dále je systém data namapuje na jiný datový typ. Tímto typem je \texttt{NodeValue}.
+
+\begin{lstlisting}
+class NodeValue extends Model {
+    machine: Machine
+    start_time: Time
+    end_time: Time
+    reservation?: Reservation
+    can_collide: boolean
+
+    constructor(jsonData: IDictionary<any>) {
+	    // ...
+    }
+}
+\end{lstlisting}
+Data systém převede a začne je upravovat pomocí funkce \texttt{CreateDataset}, tato funkce příjme parametry reprezentující data získána z databáze, jež převedena na do datového typu \texttt{NodeValue}, počáteční čas generování, počet lidí v rezervaci, a typ požadovaného datasetu ve formě Enum hodnoty \texttt{DataSetType}. Tato funkce vrátí požadovaná data, která následně budou využity pro tvorbu grafu. Výdledkem je pole polí, jež reprezentuje časová okna pro jednotlivé přístroje.
+
+
+\begin{lstlisting}
+async CreateDataset(
+    input: NodeValue[],
+    start_time: Time,
+    amount_of_people: number,
+    datasetType: DataSetType
+) {
+    try {
+	    const data = this.prepareDataset(input, start_time)
+
+	    if (datasetType === DataSetType.COLLIDING) {
+		    return await GraphService.CreateGraphNodes(
+			    this.getCollidingDataSet(data, amount_of_people)
+		    )
+	    }
+
+	    return await GraphService.CreateGraphNodes(
+		    this.getNonCollidingDataSet(data)
+	    )
+    } catch (err) {
+	    throw err
+    }
+}
+\end{lstlisting}
+
+Výsledkem funkce getCollidingDataSet je profiltrované 
+
+TODO
