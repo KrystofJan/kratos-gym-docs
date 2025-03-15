@@ -267,8 +267,9 @@ class NodeValue extends Model {
     }
 }
 \end{lstlisting}
-Data systém převede a začne je upravovat pomocí funkce \texttt{CreateDataset}, tato funkce příjme parametry reprezentující data získána z databáze, jež převedena na do datového typu \texttt{NodeValue}, počáteční čas generování, počet lidí v rezervaci, a typ požadovaného datasetu ve formě Enum hodnoty \texttt{DataSetType}. Tato funkce vrátí požadovaná data, která následně budou využity pro tvorbu grafu. Výdledkem je pole polí, jež reprezentuje časová okna pro jednotlivé přístroje.
+Data systém převede a začne je upravovat pomocí funkce \texttt{CreateDataset}, tato funkce příjme parametry reprezentující data získána z databáze, jež jsou převedena na do datového typu \texttt{NodeValue}, počáteční čas generování, počet lidí v rezervaci, a typ požadovaného datasetu ve formě Enum hodnoty \texttt{DataSetType}. Tato funkce vrací vytvořený graf, vytvořený funkcí CreateGraphNodes. 
 
+CreateGraphNodes příjmá upravený dataset, nastavený podle vstupních dat. Funkcí prepareData přidáme prázdná časová okna pro kažký přístroj. Funkce getCollidingDataSet a getNonCollidingDataSet transformují a filtrují data. getCollidingDataset spojí tréninky s jejich navazujícími mezerami. getNonCollidingDataSet vrací data kompletně bez rezervaci. Výsledkem bude pole grafových vrcholu s již vytvořenými hranami. Hrany budou vytvořeny mezi všechny možné navazující vrcholy. To znamená, že pokud je konečný čas současného vrcholu menší, nebo roven konečnému času jiného vrcholu.
 
 \begin{lstlisting}
 async CreateDataset(
@@ -295,6 +296,63 @@ async CreateDataset(
 }
 \end{lstlisting}
 
-Výsledkem funkce getCollidingDataSet je profiltrované 
+\subsection{Průchod grafem}
 
-TODO
+Následně se vytvoří instance grafu. Graf má vrcholy seřazené podle časo. Třída grafu obsahuje metodu findAllPaths, jež nalezne všechny možné průchody grafem. Tyto průchody mají počáteční vrchol v jakémkoli prvním vrcholu jež má daný přístroj. Přes tyto přístroje bude systém iterovat a pro každý najde průchod. Funkce walk se volá rekurzivně s měnícím současným přístrojem, jehož přístroj nebyl doposud navštíven, dokud v cestě nejsou vrcholy se všemi přístroji. Je nutné postupně kontrolovat navštívené vrcholy. Pomocí nich bude systém vědět jaké přístroje již navštívil. Prakticky v kódu to vypadá nějak takto:
+
+\begin{lstlisting}
+walk(
+    currentNode: GraphNode,
+    visited: number[] = [],
+    result: Path = new Path(this.desiredMachines)
+): Path {
+    visited.push(currentNode.node_id)
+    const neighbors = currentNode.neighbors.filter(
+	(node) => !visited.includes(node.node_id)
+    )
+
+    const visitedMachines = result.nodes.map(
+	(x) => x.value.machine.MachineId
+    )
+
+    for (const neighbor of neighbors) {
+	if (visited.includes(neighbor.node_id)) {
+	    continue
+	}
+	const newTime = TimeUtils.addTime(
+	    this.currentTime,
+	    neighbor.value.machine.AvgTimeTaken
+	)
+
+	if (
+	    TimeUtils.canFitInTime(
+		[neighbor.value.start_time, neighbor.value.end_time],
+		newTime
+	    ) &&
+	    !visitedMachines.includes(neighbor.value.machine.MachineId)
+	) {
+	    result.addNode(
+		new GraphNode(
+		    new NodeValue({
+			start_time: this.currentTime,
+			end_time: newTime,
+			machine: neighbor.value.machine,
+			reservation: neighbor.value.reservation,
+		    }),
+		    neighbors,
+		    neighbor.node_id
+		)
+	    )
+	    this.currentTime = newTime
+	    if (result.isFound()) {
+		break
+	    }
+	    return this.walk(neighbor, visited, result)
+	}
+    }
+    return result
+}
+\end{lstlisting}
+
+Jak lze vidět, tak rekurzivní volání provádíme pouze pokud je možné společně s průměrným časem přístroje se vlést do časového okna sousedícího vrcholu. Postupně měníme současný čas , jež v danou chvíli máme, pro udržení kontextu rezervace. Výsledky průchodu následně vrátíme na klienta.
+
