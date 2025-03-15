@@ -213,7 +213,10 @@ if (prevSuggestion === null && item.Prev !== null) {
 Tento přístup kombinuje efektivitu (práce s již načtenými daty) s robustností (rekurzivní pokrytí všech možných kolizí). Zároveň respektuje kapacitu a možnost zakázání kolizí jiných rezervací. 
 \section{Generování času pro trénink}
 
-Poslední z funkcionalit systému je zároveň i ta nejkomplexnější. Nejprve systém musí data z databáze namapovat na potřebné typy pro grafy a následovně je potřeba tento graf vytvořit.
+Poslední z funkcionalit systému je zároveň i ta nejkomplexnější. Nejprve systém musí data z databáze namapovat na potřebné typy pro grafy a následovně je potřeba tento graf vytvořit. 
+
+\subsection{Frontend}
+O implementaci na frontendu se jedná pouze o dotaz na API, kterým získáme vygenerovaná data na klienta, nastavíme hodnoty inputům a přidáme tlačítko, kterým budu moci "Vygenerovat znovu" posloupnost s časovými okny. Toto Znovuvygenerování nebude znovu posílat dotaz na API, nýbrž převezme jiný vrácený průchod.
 
 \subsection{Získání dat}
 Navydory komplexitě řešení je databázový SQL dotaz vcelku jednoduchý, Jedná se o spojeníData získáme z databáze pomocí následujícího dotazu:
