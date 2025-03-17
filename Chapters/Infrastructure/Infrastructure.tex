@@ -10,10 +10,10 @@ Toto rozdělení přináší také zásadní výhody z hlediska budoucí rozši�
 \input{Chapters/Infrastructure/Backend/Backend}
 
 \section{Frontend}
-Frontend je uživatelské rozhraní aplikace, které interaguje s uživatelem a zobrazuje data z backendu. Je napsán ve Vue.js, což je moderní JavaScriptový framework pro vytváření uživatelských rozhraní. Frontend je koncepován mnohem jednodušeji. Hlavní funkčnost systému je na backendu, tudíž pro tvorbu uživatelského rozhraní je možné omynout předtím vytvořené pravidlo, pro omezení ze strany externích knihoven. Systém Frontendovou část bere jako separátní aplikaci.
+Frontend je uživatelské rozhraní aplikace, které interaguje s uživatelem a zobrazuje data z backendu. Je napsán ve Vue.js, což je moderní JavaScriptový framework pro vytváření uživatelských rozhraní. Frontend je koncipován mnohem jednodušeji. Hlavní funkčnost systému je na backendu, tudíž pro tvorbu uživatelského rozhraní je možné obejít předtím vytvořené pravidlo pro omezení ze strany externích knihoven. Systém Frontendovou část bere jako separátní aplikaci.
 
 \subsubsection{Struktura}
-Ve implementované Vue aplikace je rozložena tímto způsobem:
+Ve implementované Vue aplikaci je rozložena tímto způsobem:
 
 \input{Chapters/Infrastructure/FE_FileTree}
 
@@ -31,9 +31,9 @@ Ve implementované Vue aplikace je rozložena tímto způsobem:
     Pro ukládání globálního stavu, jako jsou například informace o přihlášeném uživateli jsoui využity tak zvané stores. Store je reaktivní proměnná, jež obsahuje nějakou hodnotu, kterou je potřeba přenést mezi několika komponentami.
 \end{description}
 
-Tato struktura je o něco více tradiční oproti backendu, ale jelikož se jedná a nižší komplexitu systému, tak není potřebovat aplikovat přehlednější strukturu.
+Tato struktura je o něco více tradiční oproti backendu, ale jelikož se jedná o nižší komplexitu systému, tak není potřebné aplikovat přehlednější strukturu.
 
 \subsubsection{Využité nástroje}
-Jak již bylo zmíněno v sekci Využitých technologií, tak stylování bude využit Tailwind. Jelikož není vzhled UI pro tuto práci důležitý, tak je využito ShadCn pro importování nastylovaných RADIX komponent přímo do projektu. Dále pro validaci vstupních parametrů formuláře bude využita knihovna zod.
+Jak již bylo zmíněno v sekci Využitých technologií, tak stylování bude využito Tailwind. Jelikož není vzhled UI pro tuto práci kritický, tak je využito ShadCn pro importování nastylovaných RADIX komponent přímo do projektu. Dále pro validaci vstupních parametrů formuláře bude využita knihovna zod.
 
 
