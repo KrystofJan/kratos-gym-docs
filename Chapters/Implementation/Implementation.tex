@@ -210,16 +210,16 @@ if (prevSuggestion === null && item.Prev !== null) {
     \end{lstlisting}
 \end{enumerate}
 
-Tento přístup kombinuje efektivitu (práce s již načtenými daty) s robustností (rekurzivní pokrytí všech možných kolizí). Zároveň respektuje kapacitu a možnost zakázání kolizí jiných rezervací. 
-\section{Generování času pro trénink}
+Tento přístup kombinuje efektivitu (práce s již načtenými daty) s robustností (rekurzivní pokrytí všech možných kolizí). Zároveň respektuje kapacitu a možnost zakázání kolizí jiných rezervací.
 
-Poslední z funkcionalit systému je zároveň i ta nejkomplexnější. Nejprve systém musí data z databáze namapovat na potřebné typy pro grafy a následovně je potřeba tento graf vytvořit. 
+\section{Generování času pro trénink}
+Jednou z nejobtížnějších funkcí systému je ta poslední. Nejprve je nutné, aby systém přetypoval data z databáze pro účely grafů a poté došlo k vytvoření daného grafu.
 
 \subsection{Frontend}
-O implementaci na frontendu se jedná pouze o dotaz na API, kterým získáme vygenerovaná data na klienta, nastavíme hodnoty inputům a přidáme tlačítko, kterým budu moci "Vygenerovat znovu" posloupnost s časovými okny. Toto Znovuvygenerování nebude znovu posílat dotaz na API, nýbrž převezme jiný vrácený průchod.
+Frontend implementace zahrnuje pouze API dotaz pro získání generovaných dat na straně klienta, nastavení hodnot pro vstupní prvky, a přidání tlačítka určeného pro možnost "Opětovného generování" sekvence s časovými okny. Toto opětovné generování nebude opětovně odesílat API dotaz, ale zvolí jiný z navrácených průchodů.
 
 \subsection{Získání dat}
-Navydory komplexitě řešení je databázový SQL dotaz vcelku jednoduchý, Jedná se o spojeníData získáme z databáze pomocí následujícího dotazu:
+Napříč složitostí problému je SQL dotaz pro databázi relativně přímočarý. Dotaz zahrnuje spojování tabulek přístroje (machine) a rezervace přes jejich asociaci s plánem rezervace. Navíc dotaz využívá podmínkové ošetření a řazení dat podle času. Data z databáze obdržíme prostřednictvím následujícího dotazu:
 
 \begin{lstlisting}[language=SQL]
 select * 
@@ -233,11 +233,10 @@ AND start_time >= formattedStartTime::time
 And machine.machine_id = ANY(machine_ids)
 ORDER BY start_time, end_time;
 \end{lstlisting}
-Kdy input\_reservation\_date je vložené datum, formattedStartTime je formátovaný počáteční čas a machine\_ids je pole id přístrojů.
-Žádné jiné podmínky není potřeba aplikovat, to by způsobilo chybějící záznamy, které pro vytvoření grafu budeme potřebovat.
+Kdy je v rámci input\_reservation\_date zadané datum, formattedStartTime představuje formátovaný začátek času a machine\_ids obsahuje pole identifikátorů strojů. Není nutné aplikovat žádné další podmínky, neboť by to mohlo vést k chybějícím záznamům, které jsou nezbytné pro generování grafu.
 
 \subsection{Tvorba dat}
-Data podle kterých se bude graf vytvářet budou záviset na vstupních parametrech uživatele a získaných datech. Vstupní data nám reprezentuje parametr \texttt{collisions}, který je nepovinný parametr ve query HTTP dotazu. Pokud collisions není vloženo, tak kolize považujeme za povolené. Tento datový set budeme nazývat kolizním, v implementaci máme 2 typy, kolizní a nekolizní, tyto typy jsou definovány pomocí enumu \texttt{DataSetType}.
+Údaje, na základě kterých bude graf sestaven, budou záviset na uživatelských vstupních parametrech a informacích získaných z databáze. Vstupní data jsou reprezentována parametrem \texttt{collisions}, který je nepovinným parametrem v dotazu HTTP. Pokud parametr collisions není zadán, považujeme kolize za povolené. Tento soubor dat nazveme kolizním a při implementaci rozlišujeme 2 typy: kolizní a nekolizní. Tyto typy jsou určeny prostřednictvím enumu.\texttt{DataSetType}.
 
 \begin{lstlisting}
 enum DataSetType {
@@ -255,7 +254,7 @@ if (collisions === undefined) {
 }
 \end{lstlisting}
 
-Dále je systém data namapuje na jiný datový typ. Tímto typem je \texttt{NodeValue}.
+Následně systém převádí data na jiný datový typ, který je označen jako \texttt{NodeValue}.
 
 \begin{lstlisting}
 class NodeValue extends Model {
@@ -270,9 +269,10 @@ class NodeValue extends Model {
     }
 }
 \end{lstlisting}
-Data systém převede a začne je upravovat pomocí funkce \texttt{CreateDataset}, tato funkce příjme parametry reprezentující data získána z databáze, jež jsou převedena na do datového typu \texttt{NodeValue}, počáteční čas generování, počet lidí v rezervaci, a typ požadovaného datasetu ve formě Enum hodnoty \texttt{DataSetType}. Tato funkce vrací vytvořený graf, vytvořený funkcí CreateGraphNodes. 
 
-CreateGraphNodes příjmá upravený dataset, nastavený podle vstupních dat. Funkcí prepareData přidáme prázdná časová okna pro kažký přístroj. Funkce getCollidingDataSet a getNonCollidingDataSet transformují a filtrují data. getCollidingDataset spojí tréninky s jejich navazujícími mezerami. getNonCollidingDataSet vrací data kompletně bez rezervaci. Výsledkem bude pole grafových vrcholu s již vytvořenými hranami. Hrany budou vytvořeny mezi všechny možné navazující vrcholy. To znamená, že pokud je konečný čas současného vrcholu menší, nebo roven konečnému času jiného vrcholu.
+Funkce \texttt{CreateDataset} zpracovává data tím, že přijímá parametry získané z databáze a jejich převedením na datový typ \texttt{NodeValue}. Tyto parametry zahrnují počáteční čas generování, počet osob v rezervaci a typ datasetu, který je reprezentován hodnotou Enum \texttt{DataSetType}. Výstupem této funkce je generovaný graf, který se vytváří pomocí funkce CreateGraphNodes.
+
+CreateGraphNodes upravuje dataset založený na zadaných vstupních datech. Pomocí funkce prepareData se pro každý přístroj přidají prázdná časová okna. Funkce getCollidingDataSet a getNonCollidingDataSet se používají k transformaci a filtrování dat. Funkce getCollidingDataset odstraní záznamy, do nichž se zadaný počet lidí v rezervaci již nevejde, dále propojuje tréninky s navazujícími prázdnými intervaly. Naopak, getNonCollidingDataSet poskytuje data zcela bez rezervací. Výsledkem je pole grafových uzlů se stávajícími hranami. Tyto hrany se vytvářejí mezi všemi možnými sousedními uzly tak, že pokud je konečný čas současného uzlu menší nebo roven konečnému času jiného uzlu.
 
 \begin{lstlisting}
 async CreateDataset(
@@ -301,7 +301,7 @@ async CreateDataset(
 
 \subsection{Průchod grafem}
 
-Následně se vytvoří instance grafu. Graf má vrcholy seřazené podle časo. Třída grafu obsahuje metodu findAllPaths, jež nalezne všechny možné průchody grafem. Tyto průchody mají počáteční vrchol v jakémkoli prvním vrcholu jež má daný přístroj. Přes tyto přístroje bude systém iterovat a pro každý najde průchod. Funkce walk se volá rekurzivně s měnícím současným přístrojem, jehož přístroj nebyl doposud navštíven, dokud v cestě nejsou vrcholy se všemi přístroji. Je nutné postupně kontrolovat navštívené vrcholy. Pomocí nich bude systém vědět jaké přístroje již navštívil. Prakticky v kódu to vypadá nějak takto:
+Nejprve se vytvoří instance grafu. Graf má vrcholy seřazené podle času. Třída grafu zahrnuje metodu findAllPaths, která identifikuje všechny potenciální cesty grafem. Tyto cesty začínají v libovolném počátečním vrcholu definovaném konkrétním zařízením. Systém bude procházet těmito zařízeními a pro každé z nich nalezne cestu. Funkce walk se volá rekurzivně pro každý aktuální přístroj, který dosud nebyl navštíven, dokud cesta nezahrnuje všechny vrcholy s přístroji. Je nutné postupně kontrolovat navštívené vrcholy. Pomocí nich bude systém vědět, jaké přístroje již navštívil. Prakticky v kódu to vypadá nějak takto:
 
 \begin{lstlisting}
 walk(
@@ -357,5 +357,6 @@ walk(
 }
 \end{lstlisting}
 
-Jak lze vidět, tak rekurzivní volání provádíme pouze pokud je možné společně s průměrným časem přístroje se vlést do časového okna sousedícího vrcholu. Postupně měníme současný čas , jež v danou chvíli máme, pro udržení kontextu rezervace. Výsledky průchodu následně vrátíme na klienta.
+Jak lze vidět, jak rekurzivní volání provádíme pouze pokud je možné společně s průměrným časem přístroje se vlést do časového okna sousedícího vrcholu. Postupně měníme současný čas , jež v danou chvíli máme, pro udržení kontextu rezervace. Výsledky průchodu následně vrátíme na klienta.
 
+Výsledkem kombinace všech těchto metod je pole několika průchodů grafem s měnícím se začátečním přístrojem. Tyto průchody sice vždy trvají stejně, ale s jiným počátkem (například o 15 minut později). Tímto získáme pro danou chvíli všechny možné optimální způsoby, jakými lze trénink sestavit. Tento výsledek následně vrátíme na frontend, kde se hodnoty uloží do dále konfigurovatelných časových oken, jež jsou využívána v manuální konfiguraci.
