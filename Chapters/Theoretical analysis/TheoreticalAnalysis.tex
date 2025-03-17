@@ -109,18 +109,19 @@ Na průchod grafem se nabízí spousta možností, jako jsou například: DFS, B
 
 Průchod grafem bude řešen pomocí rekurze. Princip rozhodování dalšího vrcholu bude jednoduchý. Následující vrchol bude první prvek z množiny vzestupně seřazené podle koncového času, který nebyl dosud navštíven a zároveň neobsahuje přístroj, jenž byl navštíven a časově se do vrcholu vejde.
 
+Průchod grafem je vizualizován v obrázqku \ref{fig:graph_walk}. S ohledem na přehlednost byly v tomto příkladu vynecháno zobrazení všech možných hran mezi všemi vrcholy. Zelenou barvou jsou vyhrazeny hrany, jež jsou vybrány pro další průchod. Vpravo od grafu jsou informace k přístrojům a současný čas.
 
 \begin{figure}
 	\centering
-	\subfloat[neorientovaný graf\label{fig:Subfig1}]
+	\subfloat[Hrany pro první vrchol přístroje s identifikátorem 1\label{fig:graph_walk_1}]
 	{
-		\includegraphics[width=0.45\textwidth]{Figures/graph-node-1.png}
+		\includegraphics[width=0.9\textwidth]{Figures/graph-node-1.png}
 	}
-	\hspace{3em} % make more space
-	\subfloat[reprezentace grafu\label{fig:Subfig2}]
+	\vspace{3em} % make more space
+	\subfloat[Hrany pro vybraný vrchol v grafu\label{fig:graph_walk_2}]
 	{
-		\includegraphics[width=0.45\textwidth]{Figures/graph-node-2.png}
+		\includegraphics[width=0.9\textwidth]{Figures/graph-node-2.png}
 	}
-	\caption{Ukázkový obrázek se dvěma podobrázky}
-	\label{fig:TopLevelFigureLabel}
+	\caption{Ukázkový průchod grafem pro 3 vybrané přístroje s počátečním časem 9:00}
+	\label{fig:graph_walk}
 \end{figure}

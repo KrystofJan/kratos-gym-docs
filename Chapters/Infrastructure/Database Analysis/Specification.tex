@@ -13,7 +13,7 @@ Tyto skupiny nám zajistí integritu přístupu dat a jejich manipulaci. Pro ten
 
 \subsection{Popis}
 Systém bude primárně zaměřen na chod posilovny, což zahrnuje správu rezervací přístrojů na konkrétní časy a potenciálně i sledování výdělků. Pro zajištění těchto specifikací je potřeba se ujistit, že systém tyto specifikace pokrývá. Systém je postaven na třech pilířích.
-k
+
 \begin{description}
     \item[Uživatelské účty] Většina záznamů v systému vyžaduje uchovávání informací o uživateli. Samotná autentizace a související procesy, jako je ověřování uživatelů, budou řešeny mimo rámec databáze pomocí externích služeb. Nicméně je stále potřeba ukládat dodatečné informace o uživatelích přímo v databázi. Pro tento účel systém obsahuje jednoduchou tabulku s názvem account, která slouží k uchování základních informací o uživatelských účtech, jako jsou identifikátory nebo další nezbytné údaje.
     \item[Rezervace a plán] Jak napovídá samotný název, tabulka rezervace reprezentuje uživatelovu rezervaci, která je vždy vázána na konkrétní den. Každá rezervace je spojená s uživatelem a určitým plánem a může mít přiřazeného trenéra. Plán představuje komplexnější strukturu několika tabulek, které uchovávají podrobné informace o rezervaci, například konkrétní přístroje, časové rozvrhy a další detaily. Plán je tvořen následujícími tabulkami: plan, plan\_category a plan\_machine.
