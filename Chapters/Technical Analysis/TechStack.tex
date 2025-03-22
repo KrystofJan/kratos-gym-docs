@@ -69,6 +69,7 @@ function Example() {
         Click me
       </button>
     </div>
+
   );
 \end{lstlisting}
 Zde je nutné explicitně deklarovat jak stavovou proměnnou (count), tak odpovídající setter (setCount). Každá změna stavu vyžaduje volání setter funkce, což vede k přerenderování komponenty. Ačkoli tento model poskytuje granularitu kontroly, vyžaduje od vývojáře důsledné oddělení stavové logiky a prezentace. Naproti tomu stejná funkcionalita ve Vue.js využívá reaktivní referenci:
