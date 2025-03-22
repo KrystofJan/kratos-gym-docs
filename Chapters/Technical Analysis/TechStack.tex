@@ -1,5 +1,22 @@
 Tato kapitola popisuje technologie použité ve vývoji této bakalářské práce a vysvětluje jejich funkci v rámci jednotlivých vrstev. Ústřední roli v celém ekosystému hraje JavaScript, který se stal jádrem celého vývojového procesu. Tato volba vycházela z mnoha později uvedených důvodů, ale i přes to, že odpovídá široce rozšířené praxi, byla klíčová pro volbu ostatních technologií.
 
+V bakalářské práci jsou použity následující technologie, jejichž popis a důvod použití se nachází níže:
+\begin{itemize}
+    \item JavaScript/TypeScript
+    \item PostgreSQL
+    \item Node.js
+    \item Express.js
+    \item Vue.js
+    \item Tailwind CSS
+    \item ShadCN
+    \item Clerk
+    \item Zod
+    \item Docker
+    \item Git / Github
+    \item CICD - Github Actions
+    \item Python \& pytest
+\end{itemize}
+
 \section{JavaScript}
 JavaScript je základním stavebním kamenem projektu. Byla v něm i napsána úplně první verze celého backendu. V projektu byl JavaScript použit z několika důvodů:
 
@@ -8,26 +25,28 @@ JavaScript je základním stavebním kamenem projektu. Byla v něm i napsána ú
   \item[Nativní podpora ve webových prohlížečích] \hfill \\ I v dnešní době, kdy máme mnohem více možností, je javascript jazyk stále "Jazykem webu" a běží nativně ve všech moderních prohlížečích, což z něj činí téměř nezbytnou součást vývoje webových aplikací. Pro jednoduchost a jednotu mezi vrstvami dávalo smysl používat jeden jazyk.
 \end{description}
 
-Použití JavaScriptu umožnilo rychlý start a flexibilní rozvoj projektu. Samozřejmě, že jeho volba s sebou přinesla i některé problémy a úskalí, se kterými jsem se musel v průběhu projektu vypořádat. Tyto přešlapy si později rozebereme v retorspektivě.
+Použití JavaScriptu umožnilo rychlý start a flexibilní rozvoj projektu. Samozřejmě, že jeho volba s sebou přinesla i některé problémy a úskalí, se kterými jsem se musel v průběhu projektu vypořádat. Tyto přešlapy si později rozebereme v retrospektivě.
 
 V pozdější části implementace došlo k rozhodnutí přejít na TypeScript, což bylo důležitým krokem směrem k lepší struktuře a stabilitě kódu.
 
 \subsection{TypeScript}
-Je to open-source programovací jazyk vyvíjen společností Microsoft \cite{enwiki:1261773908}, který je postavený ja JavaScriptu a rozšiřuje ho o typovou kontrolu\cite{goldberg2022learning}. TypeScript poskytuje výhodu především ve větších projektech, kde je potřeba zajistit stabilitu a minimalizovat chyby spojené s dynamickým typováním JavaScriptu.
+Je to open-source programovací jazyk vyvíjený společností Microsoft \cite{enwiki:1261773908}, který je postavený na JavaScriptu a rozšiřuje ho o typovou kontrolu\cite{goldberg2022learning}. TypeScript poskytuje výhodu především ve větších projektech, kde je potřeba zajistit stabilitu a minimalizovat chyby spojené s dynamickým typováním JavaScriptu.
 
 Statická typová kontrola v TypeScriptu umožňuje odhalit chyby již během psaní kódu a nabízí větší jistotu při refactoringu \cite{enwiki:1258410189}. Přestože TypeScript stále generuje běžný JavaScript, přináší strukturálnější a bezpečnější vývojový proces, což významně zlepšilo kvalitu kódu v tomto projektu.
 
 \section{PostgreSQL}
-PostgreSQL je open-source objektově-relační databázový systém, který byl v tomto projektu zvolen jako hlavní databázové řešení \cite{enwiki:1262241967}. Tento databázový systém je známý svou stabilitou, rozšiřitelností a podporou pokročilých funkcí, jako jsou uložené procedury, transakce nebo plná podpora ACID (Atomicita, Konzistence, Izolace, Trvalost). PostgreSQL nabízí škálovatelnost a spolehlivost, které jsou klíčové pro náročné webové aplikace.
+PostgreSQL je open-source objektově-relační databázový systém, který byl v tomto projektu zvolen jako hlavní databázové řešení \cite{postgresqlPostgreSQL}. Tento databázový systém je známý svou stabilitou, rozšiřitelností a podporou pokročilých funkcí, jako jsou uložené procedury, transakce nebo plná podpora ACID (Atomicita, Konzistence, Izolace, Trvalost). PostgreSQL nabízí škálovatelnost a spolehlivost, které jsou klíčové pro náročné webové aplikace.
+
+Inicialní verze byla vyvinuta pomocí MySQL, protože jsem tuto technologii dobře znal. Přešel jsem na PostgreSQL kvůli možnosti využít bezplatného hostingu. Aplikaci jsem zpočátku vytvářel na různých zařízeních a usiloval jsem o zachování datové konzistence bez nutnosti migračního systému. Nakonec jsem se rozhodl změnit přístup kvůli některým omezením, a nyní je vše uloženo v Docker kontejneru.
 
 \section{Node.js}
-Aby program běžel, tak většína programovaních jazyků má nějaké běhové prostředí (Ang. Runtime environment) \cite{enwiki:1245152116}. Při vývoje JavaScriptu byl vytvořen "JavaScript engine" pro webový prohlížeč Netscape Navigator. V podstatě se jednalo o velmi jednoduchý interpreter. Později se tento engine se později vyvinul v SpiderMonkey, který je dodnes používán v prohlížeči Mozilla Firefox\cite{enwiki:1256640147}. Alternativa pro chromium se nazývá V8.
+Aby program běžel, tak většína programovaních jazyků má nějaké běhové prostředí (Ang. Runtime environment) \cite{newJavaScriptEngineModuleOwner}. Při vývoje JavaScriptu byl vytvořen "JavaScript engine" pro webový prohlížeč Netscape Navigator. V podstatě se jednalo o velmi jednoduchý interpreter. Později se tento engine se později vyvinul v SpiderMonkey, který je dodnes používán v prohlížeči Mozilla Firefox\cite{enwiki:1256640147}. Alternativa pro chromium se nazývá V8.
 
 Node.js poskytuje běhové prostředí pro JavaScript mimo prohlížeč. Vznikl v roce 2009 a umožnil použití JavaScriptu pro serverové aplikace. Je postaven na enginu V8 a díky tomu je velmi výkonný a efektivní.\cite{enwiki:1262522147}
 
 Node.js je dnes největším běhovým prostředím pro JavaScript na světě. Kromě možnosti tvorby serverových aplikací poskytuje ekosystém balíčků spravovaný přes npm (Node Package Manager), což je největší repozitář softwarových balíčků na světě.\cite{enwiki:1262522147}
 
-Mezi alternativy patří například Bun a Deno, avšak Node.js stále představuje průmyslový standard.
+Mezi alternativy patří například Bun a Deno, avšak Node.js stále představuje průmyslový standard, což je i důvod, proč byl zvolen pro tuto práci.
 
 \section{Express.js}
 Express.js je minimalistický webový framework pro Node.js, který byl použit pro tvorbu aplikačního programového rozhraní (API). Express usnadňuje práci s HTTP metodami a nabízí jednoduchou, ale flexibilní strukturu pro vývoj REST API\cite{enwiki:1258184667}.
@@ -77,9 +96,9 @@ Použití Tailwindu v tomto projektu umožnilo vytvořit flexibilní a rychle up
 \section{Shadcn}
 Shadcn je sada komponent pro výhradně pro React a Tailwind, která zjednodušuje integraci uživatelského rozhraní do aplikací. Umožňuje rychlé nasazení a styling komponent pomocí Tailwind CSS, čímž snižuje čas potřebný na vývoj frontendu. Jedná se o předem nastylované Radix komponenty.
 
-Narozdíl od ostatních sad komponent jako například Bootstrap, shadcn naimportuje kód komponent přímo do projektu, tudíž jsou plně upravitelné.
+Narozdíl od ostatních sad komponent, jako například Bootstrap, shadcn přidá kód komponent přímo do projektu, tudíž jsou plně upravitelné. Vue komunita vytvořila svou neoficiální verzi Shadcn s názvem Shadcn-vue, která byla v této práci využita.
 
-Vue komunita vytvořila svou neoficiální verzi Shadcn s názvem Shadcn-vue. 
+Použití této knihovny komponent ulehčilo vývoj webového uživatelského rozhraní s dodáním celistvého vzhledu.
 
 \section{Clerk}
 Clerk je autentizační a správcovská služba uživatelů, která zjednodušuje implementaci přihlašování, registrací a správy uživatelů v aplikacích. Nabízí snadnou integraci s frontendovými technologiemi, jako je Vue.js
@@ -109,4 +128,4 @@ Při vývoji rezervačního systému byly github actions především použity p
 \section{Python a pytest}
 Python je vysoce úrovňový interpretovaný skriptovací jazyk, který se vyznačuje unikátním způsobem strukturování kódu. Namísto tradičního používání složených závorek pro seskupování bloků kódu využívá Python bílých znaků (whitespace), což přispívá k jeho čitelnosti a jednoduchosti \cite{enwiki:1262860862, enwiki:1259453401}.
 
-V rámci tohoto projektu je Python využit pro vývoj API testů, přičemž byl využit framework pytest. Pytest je vcelku jednoduchý a s kombinací s možností rychlého vývoje v Pythonu nám toto teechnologické rozhodnutí umožnilo opravdu rychlý vývoj jednoduchých testů.
+V rámci tohoto projektu je Python využit pro vývoj API testů, přičemž byl využit framework pytest. Pytest je vcelku jednoduchý a s kombinací s možností rychlého vývoje v Pythonu toto technologické rozhodnutí umožnilo opravdu rychlý vývoj jednoduchých testů.

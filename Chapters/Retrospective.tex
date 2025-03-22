@@ -13,7 +13,7 @@ Jak jsem již na začátku zmiňoval, tato technologická volba nese i značné 
 \item[Dynamické datové typy] 
 Dynamicky typované jazyky jsou náchylné na větší chybovost a menší kvalitu kódu \cite{pang2018programming}. V bakalářské práci se osvědčilo použití statických typů, které pomohly lépe definovat výstupy a vstupy.
 \item[Chybějící vlastnosti jazyka] 
-Jelikož JavaScript je dynamicky typovaný jazyk, chybí v něm koncepty jako například enum, interface a mnoho dalších, které například TypeScript dodává.
+Jelikož JavaScript je dynamicky typovaný jazyk, chybí v něm koncepty jako například enum, interface a mnoho dalších, které například TypeScript dodává \cite{typescriptlangHandbookEnums, typescriptlangHandbookInterfaces}.
 \item[Řešení výjimek]
 Javascript má oproti více moderním programovacím jazykům mě osobně nevyhovující systém odchytávání chyb. Javascript používá systém try/catch/finally, který se v moderních jazycích postupně nahrazuje konceptem Errors as values. Tato nevýhoda je pouze osobní preferencí, ale tato preference je podmíněna. Pokud například mám určitou funkci, při jejímž průběhu může nastat chyba, tak v jazycích, které mají chybovatelné typy (například Result enum v Rustu), či funkce s více vracejícími hodnotami (jako například v Go), se jednoduše vrátí jiný výsledek. Díky tomuto přístupu je programátor nucen chybu ošetřit, aby se ujistil o existenci správného výsledku. To vede k robustnějšímu kódu. Pokud ale můžeme jednoduše výjimku vyhodit, čímž průběh programu narušíme a funkce stále vrací stejný typ, není přímo z definice této funkce jasné, zda může vyhodit výjimku. Jsme v tu chvíli nuceni tuto záležitost odchytávat při tom, jak na ni narazíme. To se stává problémem, když interagujeme s námi nenapsaným kódem.
 \end{description}

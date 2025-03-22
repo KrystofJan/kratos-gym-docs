@@ -87,7 +87,7 @@ Tyto data budeme tedy následovně upravovat na základě vstupních hodnot posk
 
 Pokud uživatel kolize nepovolí, tak se nabízí zcela jednoduché řešení. Z předem připravených dat jednoduše odstraníme ty možnosti, které obsahují rezervaci, tj. někdo přes toto časové okno již rezervaci má. Tyto data budou tedy výslednými vrcholy pro tento scénář.
 
-V případě, že uživatel kolize povolí, bude problém o něco složitější. Nejprve z právě těch záznamů, které obsahují rezervaci a zároveň mají kolize povolené, systém musí danou rezervaci odstranit, tímto se z těchto záznamů stanou předem zmíněné mezery. Rezervace, které mají kolize zakázané, musí v datech zůstat. Dále systém projde všechny tyto mezery a spojí je dohromady viz obrázek. % TODO
+V případě, že uživatel kolize povolí, bude problém o něco složitější. Nejprve z právě těch záznamů, které obsahují rezervaci a zároveň mají kolize povolené, systém musí danou rezervaci odstranit, tímto se z těchto záznamů stanou předem zmíněné mezery. Rezervace, které mají kolize zakázané, musí v datech zůstat. Dále systém projde všechny tyto mezery a spojí je dohromady.
 Tímto se nám zmenší počet vrcholů, přes které systém poté bude procházet. Až po spojení mezer systém odstraní záznamy, jež obsahují zbývající rezervace.
 
 Výsledkem obou případů jsou volná časová okna, která jsou pro danou konfiguraci dostupná, právě tyto hodnoty budou hodnotou vrcholů, jež v grafu budou.

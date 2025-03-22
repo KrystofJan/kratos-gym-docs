@@ -12,21 +12,21 @@ Tato sekce se věnuje popisu nejdůležitějších tabulek, které můžeme vid�
 \begin{table}[h!]
 	\caption{Reservation}
     \label{tab:dat-dictionary-reservation}
-	\begin{tabular}{|p{3.5cm}|p{2cm}|p{1cm}|p{2.5cm}|p{.75cm}|p{.5cm}|p{3.25cm}|}
+	\begin{tabular}{|p{3.5cm}|p{2cm}|p{1cm}|p{2.5cm}|p{.75cm}|p{3.75cm}|}
 		\hline
-        \textbf{Název atributu} & \textbf{Dat. Typ} & \textbf{Délka} & \textbf{Klíč} & \textbf{Null} & \textbf{IO} & \textbf{Popis} \\
+        \textbf{Název atributu} & \textbf{Dat. Typ} & \textbf{Délka} & \textbf{Klíč} & \textbf{Null} & \textbf{Popis} \\
         \hline
-        reservation\_id & INT & - & Primary & Ne & & Id rezervace \\
+        reservation\_id & INT & - & Primary & Ne & Id rezervace \\
         \hline
-        ammout\_of\_people & INT & - & - & Ne & & Počet lidí \\
+        ammout\_of\_people & INT & - & - & Ne & Počet lidí \\
         \hline
-        reservation\_time & DATE & - & - & Ne & & Čas příchodu \\
+        reservation\_time & DATE & - & - & Ne & Čas příchodu \\
         \hline
-        customer\_id & INT & - & Cizí (account) & Ne & & Id uživatele, na kterého je rezervace napsaná \\
+        customer\_id & INT & - & Cizí (account) & Ne & Id uživatele, na kterého je rezervace napsaná \\
         \hline
-        trainer\_id & INT & - & Cizí (account) & Ne & & Id trenéra \\
+        trainer\_id & INT & - & Cizí (account) & Ne & Id trenéra \\
         \hline
-        plan\_id & INT & - & Cizí (plan) & Ne & & Id plánu \\
+        plan\_id & INT & - & Cizí (plan) & Ne & Id plánu \\
         \hline
 	\end{tabular}
 \end{table}
@@ -34,23 +34,23 @@ Tato sekce se věnuje popisu nejdůležitějších tabulek, které můžeme vid�
 \begin{table}[h!]
 	\caption{Machine}
     \label{tab:dat-dictionary-machine}
-	\begin{tabular}{|p{3.5cm}|p{2cm}|p{1cm}|p{2.5cm}|p{.75cm}|p{.5cm}|p{3.25cm}|}
+	\begin{tabular}{|p{3.5cm}|p{2cm}|p{1cm}|p{2.5cm}|p{.75cm}|p{3.75cm}|}
 		\hline
-        \textbf{Název atributu} & \textbf{Dat. Typ} & \textbf{Délka} & \textbf{Klíč} & \textbf{Null} & \textbf{IO} & \textbf{Popis} \\
+        \textbf{Název atributu} & \textbf{Dat. Typ} & \textbf{Délka} & \textbf{Klíč} & \textbf{Null} & \textbf{Popis} \\
         \hline
-            machine\_id & INTEGER   &  -    & Primary       & Ne &  & Id stroje \\
+            machine\_id & INTEGER   &  -    & Primary       & Ne & Id stroje \\
             \hline
-            machine\_name     & VARCHAR   &  64   & -                 & Ne &  & Název stroje \\
+            machine\_name     & VARCHAR   &  64   & -                 & Ne & Název stroje \\
             \hline
-            max\_weight       & FLOAT   &  -   & -                 & Ne &  & Maximální váha, kterou lze použít \\
+            max\_weight       & FLOAT   &  -   & -                 & Ne &  Maximální váha, kterou lze použít \\
             \hline
-            min\_weight       & FLOAT   &  1    & -                 & Ne &  & Minimální váha, kterou lze použít \\
+            min\_weight       & FLOAT   &  1    & -                 & Ne &  Minimální váha, kterou lze použít \\
             \hline
-            max\_people       & INTEGER   &  -  & -                 & Ne &  & Maximální počet lidí na stroji \\
+            max\_people       & INTEGER   &  -  & -                 & Ne & Maximální počet lidí na stroji \\
             \hline
-            avg\_time\_taken    & INTEGER   &     & -                 & Ne &  & Průměrný trávený čas \\
+            avg\_time\_taken    & INTEGER   &     & -                 & Ne & Průměrný trávený čas \\
             \hline
-            popularity\_score & INTEGER      &  -    & -                 & Ne &  &  Počet rezervací \\
+            popularity\_score & INTEGER      &  -    & -                 & Ne &  Počet rezervací \\
         \hline
 	\end{tabular}
 \end{table}
@@ -58,15 +58,15 @@ Tato sekce se věnuje popisu nejdůležitějších tabulek, které můžeme vid�
 \begin{table}[h!]
 	\caption{plan}
     \label{tab:dat-dictionary-plan}
-	\begin{tabular}{|p{3.5cm}|p{2cm}|p{1cm}|p{2.5cm}|p{.75cm}|p{.5cm}|p{3.25cm}|}
+	\begin{tabular}{|p{3.5cm}|p{2cm}|p{1cm}|p{2.5cm}|p{.75cm}|p{3.75cm}|}
 		\hline
-        \textbf{Název atributu} & \textbf{Dat. Typ} & \textbf{Délka} & \textbf{Klíč} & \textbf{Null} & \textbf{IO} & \textbf{Popis} \\
+        \textbf{Název atributu} & \textbf{Dat. Typ} & \textbf{Délka} & \textbf{Klíč} & \textbf{Null} & \textbf{Popis} \\
         \hline
-            plan\_id & INTEGER   &  -    & Primary       & Ne &  & Id plánu \\
+            plan\_id & INTEGER   &  -    & Primary       & Ne & Id plánu \\
         \hline
-            plan\_name     & VARCHAR   &  64   & -                 & Ne &  & Název plánu \\
+            plan\_name     & VARCHAR   &  64   & -                 & Ne & Název plánu \\
         \hline
-            account\_id     & INTEGER   &  -   & -                 & Ne &  & Id uživatele, který vytvořil plán \\
+            account\_id     & INTEGER   &  -   & -                 & Ne & Id uživatele, který vytvořil plán \\
         \hline
 	\end{tabular}
 \end{table}
@@ -74,22 +74,22 @@ Tato sekce se věnuje popisu nejdůležitějších tabulek, které můžeme vid�
 \begin{table}[h!]
 	\caption{plan\_machine}
     \label{tab:dat-dictionary-plan-machine}
-	\begin{tabular}{|p{3.5cm}|p{2cm}|p{1cm}|p{2.5cm}|p{.75cm}|p{.5cm}|p{3.25cm}|}
+	\begin{tabular}{|p{3.5cm}|p{2cm}|p{1cm}|p{2.5cm}|p{.75cm}|p{3.75cm}|}
 		\hline
-        \textbf{Název atributu} & \textbf{Dat. Typ} & \textbf{Délka} & \textbf{Klíč} & \textbf{Null} & \textbf{IO} & \textbf{Popis} \\
+        \textbf{Název atributu} & \textbf{Dat. Typ} & \textbf{Délka} & \textbf{Klíč} & \textbf{Null} & \textbf{Popis} \\
         \hline
-            plan\_id        & INTEGER   &  -    & Cizí (plan)       & Ne &  & Id plánu \\
+            plan\_id        & INTEGER   &  -    & Cizí (plan)       & Ne & Id plánu \\
         \hline
-            machine\_id     & INTEGER   &  -    & Cizí (machine)       & Ne &  & Id stroje \\
+            machine\_id     & INTEGER   &  -    & Cizí (machine)       & Ne & Id stroje \\
         \hline
-            sets                & INTEGER   &  -   & -                 & Ne &  & TODO \\
+            sets                & INTEGER   &  -   & -                 & Ne & TODO \\
         \hline
-            reps                & INTEGER   &  -    & -                 & Ne &  &  TODO \\
-            start\_time     & TIME      &  -    & -                 & Ne &  & Čas začátku \\
+            reps                & INTEGER   &  -    & -                 & Ne &  TODO \\
+            start\_time     & TIME      &  -    & -                 & Ne & Čas začátku \\
         \hline
-            end\_time       & TIME      &  -    & -                 & Ne &  & čas konce \\
+            end\_time       & TIME      &  -    & -                 & Ne & čas konce \\
         \hline
-            can\_disturb          & BOOLEAN   &  1    & -                 & Ne &  & TODO \\
+            can\_disturb          & BOOLEAN   &  1    & -                 & Ne & TODO \\
         \hline
 	\end{tabular}
 \end{table}
