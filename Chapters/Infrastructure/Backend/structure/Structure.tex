@@ -42,7 +42,7 @@ V další části popíšeme strukturu modulů a na příkladech ukážeme tok d
 \subsection{model}
 Reprezentuje data vrácená v odpovědi. Model využívá dekorátory, které definují mapování mezi daty v modelu a databází. Jedná se o třídu, která dědí z obecného modelu.
 
-\lstinputlisting[label=src:BERoutes,caption={Příklad implementace endpoint modelu}]{SourceCodes/foo.model.ts}
+\lstinputlisting[label=src:BEModel,caption={Příklad implementace endpoint modelu}]{SourceCodes/foo.model.ts}
 
 Tento příklad demonstruje definiční datový model Foo s následující strukturou:
 \begin{description}
@@ -77,7 +77,7 @@ Příklad FooService ukazuje, jak metoda GetFooById využívá BasicQueryDatabas
 \subsection{database}
 Pokud nejsou obecné operace pro práci v databázi pro potřebnou akci dostatečné, lze vytvořit instance databáze, která se od obecného řešení odvíjí, ale zároveň implementuje specifickou logiku vyžadovanou danými požadavky.
 
-\lstinputlisting[label=src:BEServices,caption={Příklad implementace endpoint service}]{SourceCodes/bd-select.ts}
+\lstinputlisting[label=src:DBSelect,caption={Příklad implementace select funkce}]{SourceCodes/bd-select.ts}
 
 SelectSpecific je jedna z funkcí třídy BasicQueryDatabase, která využívá metadata navázaná na objekt pomocí dekorátorů. Jak lze vidět funkce se převážne jen stará o sestavení SQL dotazu, vrácení získaných dat a uzavření spojení s databází.
 
