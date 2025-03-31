@@ -1,21 +1,35 @@
-\chapter{Závěr}
-
-\section{Získané zkušenosti}
-
-Celkově si troufám říci, že jsem během tohoto procesu nabyl spoustu zkušeností, které jsem schopen aplikovat v praxi. Jsem nyní více sebevědomý ve svých schopnostech. Ustanovil jsem si určité preference, jako například větší oblibu striktně typovaných kompilovaných jazyků. Oprášil jsem si své frontendové dovednosti, jež jsem od studia střední školy mimo stylování nepoužil. Dále jsem se samozřejmě zlepšil v mých schopnostech psát JavaScript a TypeScript.
+\chapter{Závěr} \label{conclusion}
 
 \section{Budoucí směřování a rozšíření}
 
-Následující seznam obsahuje dodatky, které bych rád do práce přidal v budoucnu:
+Před shrnutím celé této práce je nutné zmínit, že tato bakalářská práce byla zamýšlena jako prototyp. V současném stavu aplikaci chybí několik klíčových funkcionalit, které by člověk tradičně očekával od rezervačního systému. Zároveň je spousta konceptů, které bych rád dále rozvíjel, či přidal do stávající aplikace. Následující seznam obsahuje dodatky, které bych rád do práce v budoucnu přidal:
 
 \begin{enumerate}
-\item \textbf{Kreditový systém} – Každá rezervace by byla za určitý počet kreditů, tyto kredity by se odvíjely od skutečných peněz. Zákazník by mohl například dostávat i věrnostní kredity.
-\item \textbf{Napojení platební služby} – Kreditový systém by potřeboval i platební službu, jako například Stripe, jež by umožnila zasílat platby přes internet.
-\item \textbf{Statistiky} – Rád bych do administrace přidal statistiky chodu posilovny, například nejpoužívanější přístroje.
-\item \textbf{Mapa posilovny} – Konfigurátor jsem původně chtěl koncipovat v podobě interaktivní mapy posilovny. Toto řešení bylo nakonec zaměněno za checkboxy a konfiguraci časových oken. Rád bych ale tento způsob prozkoumal.
-\item \textbf{Uložení tréninkového plánu} – V databázi pro předpřipravené tréninkové plány již existují potřebné tabulky, ale k implementaci jsem se nedostal.
-\item \textbf{Generace tréninku s "dírami"} – Jako díry si můžeme představit volný čas mezi časovými okny zvolenými pro přístroj. Generování těchto tréninků by mohlo teoreticky vést k efektivnějšímu využití přístrojů.
+    \item \textbf{Kreditový systém} – Každá rezervace by byla za určitý počet kreditů, tyto kredity by se odvíjely od skutečných peněz. Zákazník by mohl například dostávat i věrnostní kredity.
+    \item \textbf{Napojení platební služby} – Kreditový systém by potřeboval i platební službu, jako například Stripe, jež by umožnila zasílat platby přes internet.
+    \item \textbf{Statistiky} – Rád bych do administrace přidal statistiky chodu posilovny, například nejpoužívanější přístroje.
+    \item \textbf{Mapa posilovny} – Konfigurátor jsem původně chtěl koncipovat v podobě interaktivní mapy posilovny. Toto řešení bylo nakonec zaměněno za checkboxy a konfiguraci časových oken. Rád bych ale tento způsob prozkoumal.
+    \item \textbf{Uložení tréninkového plánu} – V databázi pro předpřipravené tréninkové plány již existují potřebné tabulky, ale k implementaci jsem se nedostal.
+    \item \textbf{Generace tréninku s "dírami"} – Jako díry si můžeme představit volný čas mezi časovými okny zvolenými pro přístroj. Generování těchto tréninků by mohlo teoreticky vést k efektivnějšímu využití přístrojů.
+    \item \textbf{Zabezpečení systému} – Systém sice využívá Clerk jako autentikační řešení, nicméně tato autentikace se týká pouze frontendové části. Aby byla aplikace provozu schopna, bylo by potřeba dodat autentikační a autorizační systém také do backendu. Zároveň je potřeba aby systém místo obyčejného HTTP využíval HTTPS.
 \end{enumerate}
 
 Tato rozšíření by dále zvýšila praktickou hodnotu aplikace a poskytla uživatelům komplexnější řešení pro správu jejich tréninkových aktivit.
-\endinput
+
+\section{Shrnutí}
+Cílem této bakalářské práce bylo vytvoření řešení rezervačního systému s ohledem na maximální kapacitu posilovny, typ tréninku a využití dostupných nástrojů. Řešení bylo zaměřené na návrh a implementaci funkčního systému a schopnosti doporučení na základě předem zmíněných kritérií a ne na vzhled aplikace. 
+
+Systém má schopnost doporučovat zařízení na základě dříve vybraných přístrojů, tak i doporučovat čas tréninku v několika formách. Implementace prostřednictvím rezervačního konfigurátoru je jak intuitivní, tak i efektivní. Systém je také obdařen jednoduchou administrací, do které mají přístup pouze oprávnění uživatelé (zaměstnanci posilovny). 
+
+Technické řešení generování tréninkových plánů na základě kapacity jednotlivých vybraných přístrojů vychází z konceptu grafů z diskrétní matematiky, což z tohoto přístupu dělá vcelku komplexní, ale zároveň elegantní řešení této problematiky.
+
+Doporučení časových oken pro manuální konfiguraci, nebo úpravu vygenerovaného tréninku bere ohled na optimalizaci a omezení komunikace mezi vrstvami. Tento přístup výsledně dodá jak plynulý uživatelský zážitek, tak i více škálovatelné a výkonově nenáročné řešení. Tyto implementační principy se objevují napříč celým návrhem i výslednou aplikací.
+
+Důraz byl také kladen na implementaci CI/CD, testovací postupy, využití Dockeru a intuitivní návrh uživatelského rozhraní. Hlavním motivem bylo úsilí maximálně se přizpůsobit nejen osvědčeným postupům v oblasti vývoje, ale i souvisejícím praktikám, jež jsou běžně aplikovány v praxi. CI/CD, testy a Docker dodaly jistotu při změnách ve vývoji, usnadnily rozšiřitelnost a možnost spuštění a vývoje aplikace na různých zařízeních bez jakýchkoli problémů. 
+
+Aplikace spojuje prověřené technologie (\texttt{PostgreSQL}, \texttt{Node.js}) s moderními nástroji (\texttt{Vue.js}, \texttt{TypeScript}, \texttt{Tailwind CSS}), zajišťující stabilní backend s typovou bezpečností a agilní frontend s konzistentním designem. Automatizované CI/CD (\texttt{GitHub Actions}, \texttt{Docker}, \texttt{pytest}) a integrace specializovaných knihoven (\texttt{Clerk}, \texttt{Zod}) minimalizují technologický dluh a zjednodušují reprodukovatelnost.
+
+Výsledná aplikace je přehledná, funkční a s dodatky zmíněnými výše by byla schopna provozu v reálném světě. 
+
+\section{Získané zkušenosti}
+Mohu s jistotou uvést, že jsem během tohoto procesu získal značné množství zkušeností, které mohu efektivně aplikovat v praxi. Má důvěra ve vlastní schopnosti se zvýšila. Navíc jsem si vytyčil své preference, například jsem si oblíbil kompilované jazyky s přísnou typovou kontrolou. Oživil jsem své dovednosti ve vývoji frontendových aplikací, které jsem od střední školy, s výjimkou stylování, nevyužíval. Rovněž jsem se zdokonalil ve svých dovednostech psaní JavaScriptu a TypeScriptu.

@@ -1,8 +1,8 @@
 
 \subsection{Struktura}
-Struktura projektu prošla několika výraznými změnami. S každou iterací systém nabýval na komplexitě a více strádal na přehlednosti, což vedlo k rozhodnutí provést kompletní přepsání backendu. Toto rozhodnutí vedlo k výraznému zlepšení přehlednosti a jednoduchosti systému. Podrobné poznámky k procesu refactoringu a jednotlivým iteracím jsou uvedeny v následujících částech textu.
+Struktura projektu prošla několika výraznými změnami. S každou iterací systém nabýval na komplexitě a více strádal na přehlednosti, což vedlo k rozhodnutí provést kompletní přepsání backendu. Toto rozhodnutí vedlo k výraznému zlepšení přehlednosti a jednoduchosti systému. Podrobné poznámky k procesu refaktoringu a jednotlivým iteracím jsou uvedeny v následujících částech textu.
 
-Aktuální backendová architektura je koncipována jako přehledně strukturované řešení s explicitním důrazem na logické uspořádání komponent. Její organizace, založená na seskupování zdrojů dle koncových bodů (např. rezervace, uživatelský účet, atd.), místo tradičního rozdělení podle funkcí (např. service, controller, atd.)
+Aktuální backendová architektura je koncipována jako přehledně strukturované řešení s explicitním důrazem na logické uspořádání komponent. Její organizace je založená na seskupování zdrojů dle koncových bodů (např. rezervace, uživatelský účet, atd.), místo tradičního rozdělení podle funkcí (např. service, controller, atd.)
 Kořenový adresář je uspořádán následujícím způsobem:
 \input{Chapters/Infrastructure/Backend/structure/FileTree}
 \subsection{Root složka}
@@ -39,7 +39,7 @@ Složka src centralizuje veškerou logiku Express.js HTTP serveru a je strukturo
 \subsection{Endpoints / Koncové body}
 V další části popíšeme strukturu modulů a na příkladech ukážeme tok dat od rout přes aplikační logiku k databázi a zpět ke klientovi:
 
-\subsection{model}
+\subsubsection{Definice datové struktury - model}
 Reprezentuje data vrácená v odpovědi. Model využívá dekorátory, které definují mapování mezi daty v modelu a databází. Jedná se o třídu, která dědí z obecného modelu.
 
 \lstinputlisting[label=src:BEModel,caption={Příklad implementace endpoint modelu}]{SourceCodes/foo.model.ts}
@@ -53,33 +53,33 @@ Tento příklad demonstruje definiční datový model Foo s následující struk
 Model zároveň ilustruje aplikaci dekorátorů (např. @PrimaryKey, @ForeignKey, @Column, atd.), které rozšiřují funkcionalitu modelu o metadata nutná pro obecné požadavky na databázi. 
 
 Následující příklad bude popisován dále v popisech dalších bodech.
-\subsection{routes}
+\subsubsection{Definice koncových cest - routes}
 Obsahuje definice HTTP cest, které se volají v globálním routeru. Tyto definice obvykle pouze směrují požadavky na příslušný controller.
 
 \lstinputlisting[label=src:BERoutes,caption={Příklad implementace endpoint routů}]{SourceCodes/foo.routes.ts}
 
 V tomto příkladu nejprve vytvoříme instanci express.js routeru. Následovně definujeme jednotlivé koncové body, které budou pro uživatele dostupné. Tyto definice pouze volají příslušný controller, kterému předává informace o requestu (dotazu) a o požadované response (odpovědi)
 
-\subsection{controller} 
+\subsubsection{Řízení aplikace a zpracování požadavků - controller} 
 Zajišťuje logiku volání příslušných služeb (service) a sestavuje tělo HTTP odpovědi na základě výsledků těchto služeb.
 
 \lstinputlisting[label=src:BEControllers,caption={Příklad implementace endpoint controllerů}]{SourceCodes/foo.controller.ts}
 
-Kontroler FooController využívá safeAwait pro asynchronní error handling bez try/catch, inspirovaný Go jazykem. Metoda FindById nejprve načte entitu Foo, poté asociovaný Bar, a standardizuje odpovědi přes OkResponse/FailedResponse.
+Kontroler \texttt{FooController} využívá \texttt{safeAwait} pro asynchronní error handling bez try/catch, inspirovaný jazykem GO. Metoda \texttt{FindById} nejprve načte entitu \texttt{Foo}, poté asociovaný \texttt{Bar}, a standardizuje odpovědi přes \texttt{OkResponse}/\texttt{FailedResponse}.
 
-\subsection{service}
-Úloha service je na základě vstupních dat vrátit data namapovaná na požadovaný typ. Tyto data je možné získat z databáze, nebo jiných služeb.
+\subsubsection{Business logika a zpracování dat - service}
+Úloha service je na základě vstupních dat vrátit data namapovaná na požadovaný typ. Tato data je možné získat z databáze, nebo jiných služeb.
 
 \lstinputlisting[label=src:BEServices,caption={Příklad implementace endpoint service}]{SourceCodes/foo.service.ts}
 
-Příklad FooService ukazuje, jak metoda GetFooById využívá BasicQueryDatabase pro komunikaci s databází a safeAwait ke zpracování chyb bez nutnosti zanořených try/catch bloků. Surová data z dotazu jsou transformována do instance třídy Foo pomocí explicitního mapování, které zajišťuje validaci a typovou bezpečnost.
+Příklad \texttt{FooService} ukazuje, jak metoda \texttt{GetFooById} využívá \texttt{BasicQueryDatabase} pro komunikaci s databází. Surová data z dotazu jsou transformována do instance třídy \texttt{Foo} pomocí explicitního mapování, které zajišťuje validaci a typovou bezpečnost.
 
-\subsection{database}
-Pokud nejsou obecné operace pro práci v databázi pro potřebnou akci dostatečné, lze vytvořit instance databáze, která se od obecného řešení odvíjí, ale zároveň implementuje specifickou logiku vyžadovanou danými požadavky.
+\subsubsection{Práce s databází a specifické dotazy - database}
+Pokud nejsou obecné operace pro práci v databázi pro potřebnou akci dostatečné, lze vytvořit instance databáze, která se od obecného řešení odvíjí, ale zároveň implementuje specifickou logiku vyžadovanou danými požadavky (dědí ze třídy \texttt{BasicQueryDatabase}).
 
 \lstinputlisting[label=src:DBSelect,caption={Příklad implementace select funkce}]{SourceCodes/bd-select.ts}
 
-SelectSpecific je jedna z funkcí třídy BasicQueryDatabase, která využívá metadata navázaná na objekt pomocí dekorátorů. Jak lze vidět funkce se převážne jen stará o sestavení SQL dotazu, vrácení získaných dat a uzavření spojení s databází.
+\texttt{SelectSpecific} je jedna z funkcí třídy \texttt{BasicQueryDatabase}, která využívá metadata navázaná na objekt pomocí dekorátorů. Jak lze vidět, funkce se převážně jen stará o sestavení SQL dotazu, vrácení získaných dat a uzavření spojení s databází.
 
-\subsection{error-handler}
-Slouží jako mapper, který na základě vrácených chyb sestavuje odpovídající HTTP odpovědi. Pod pokličkou se jedná o hash mapu, která obsahuje typy errorů se status kódy. Je volán z controlleru.
+\subsubsection{error-handler}
+Slouží jako mapper, který na základě vrácených chyb sestavuje odpovídající HTTP odpovědi. Pod pokličkou se jedná o hash mapu, která obsahuje typy chyb se status kódy. Je volán z controlleru.

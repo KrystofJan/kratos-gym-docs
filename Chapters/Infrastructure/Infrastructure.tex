@@ -1,7 +1,7 @@
 \chapter{Infrastruktura}
 
 \section{Úvod}
-S výjimkou databázového systému je aplikace rozdělena do dvou oddělených vrstev: frontend a backend. Rozhodnutí nevyužít fullstack framework, jako je například Nuxt, je poměrně jednoduché. Tyto dvě vrstvy mohou fungovat zcela odděleně, což umožňuje využití různých verzí technologií a zajišťuje větší flexibilitu při správě a nasazování jednotlivých částí systému.
+S výjimkou databázového systému je aplikace rozdělena do dvou oddělených vrstev: frontend a backend. Rozhodnutí nevyužít fullstack framework, jako je například Nuxt\cite{nuxtIntroductionStarted}, je poměrně jednoduché. Tyto dvě vrstvy mohou fungovat zcela odděleně, což umožňuje využití různých verzí technologií a zajišťuje větší flexibilitu při správě a nasazování jednotlivých částí systému.
 
 Toto rozdělení přináší také zásadní výhody z hlediska budoucí rozšiřitelnosti. Aplikace se dá snadno přizpůsobit pro různé platformy – například ji lze rozšířit o mobilní nebo desktopovou aplikaci, aniž by to narušilo stávající strukturu. Díky této modularitě je architektura systému robustnější a lépe připravená na budoucí požadavky. Navzdory rozdělení je projekt uložený v jednom git repozitáři.
 
@@ -18,22 +18,18 @@ Ve implementované Vue aplikaci je rozložena tímto způsobem:
 \input{Chapters/Infrastructure/FE_FileTree}
 
 \begin{description}
-    \item[Components] 
-
-    \item[Views]  
-
-    \item[support] 
-
-    \item[router] 
-    Aplikace vyuzívá vue router. To umožnuje implementaci veškerého routingu v jednom objektu. 
+    \item[vomponents] - Zahrnuje elementární UI prvky aplikace jako \texttt{Header} či \texttt{Footer}. Tyto komponenty slouží jako základní stavební bloky pro konstrukci rozhraníě. Většinou jsou implementovány s důrazem kladeným na využítí kdekoli v systému.
+    \item[views] - Reprezentují kompletní stránky aplikace (např. HomePage, Uživatelský profil, atd.) sestavené z kombinace komponent. Ačkoli technicky jde o Vue komponenty, jejich funkcionalita je specializována pro konkrétní route, bez požadavku na opětovné použití. Primárně slouží k organizaci vizuálních celků na úrovni stránky.
+    \item[support] - obsahuje pomocné funkce a třídy. Mezi tyto pomocné scripty patří například definice typů (types) pro data vrácená z API a definice služeb (service), jež obsahují zaobalenou logiku pro získání dat z API.
+    \item[router] - Aplikace využívá Vue Router pro implementaci navigační logiky, přičemž veškeré routování je centralizováno v jednom konfiguračním objektu. Tento objekt definuje klíčové parametry tras včetně názvu cílového endpointu (name), URL vzoru (path) a asociované View komponenty, která se aktivuje při navigaci na danou cestu.
 
     \item[store]
-    Pro ukládání globálního stavu, jako jsou například informace o přihlášeném uživateli jsoui využity tak zvané stores. Store je reaktivní proměnná, jež obsahuje nějakou hodnotu, kterou je potřeba přenést mezi několika komponentami.
+    Pro ukládání globálního stavu, jako jsou například informace o přihlášeném uživateli jsou využity tak zvané stores. Store je reaktivní proměnná, jež obsahuje nějakou hodnotu, kterou je potřeba přenést mezi několika komponentami.
 \end{description}
 
 Tato struktura je o něco více tradiční oproti backendu, ale jelikož se jedná o nižší komplexitu systému, tak není potřebné aplikovat přehlednější strukturu.
 
 \subsubsection{Využité nástroje}
-Jak již bylo zmíněno v sekci Využitých technologií, tak stylování bude využito Tailwind. Jelikož není vzhled UI pro tuto práci kritický, tak je využito ShadCn pro importování nastylovaných RADIX komponent přímo do projektu. Dále pro validaci vstupních parametrů formuláře bude využita knihovna zod.
+Jak již bylo zmíněno v kapitole Využitých technologií \ref{techstack}, tak stylování bude využito Tailwind. Jelikož není vzhled UI pro tuto práci kritický, tak je využito ShadCn pro importování nastylovaných RADIX komponent přímo do projektu. Dále pro validaci vstupních parametrů formuláře bude využita knihovna zod.
 
 

@@ -1,5 +1,5 @@
-\chapter{Testy a CICD}
-V softwarovém vývoji se lze potkat výhradně s dvěma typy chyb. Jedná se o chyby syntaktické a chyby logické. Syntaktické chyby odchytává compiler, či interpreter při kompilování, nebo běhu programu. Jedná se o takovou syntaktickou analýzu. V dnešní době se tyto chyby dají odchytnout i dříve pomocí moderních editorů, jež využívají LSP. Syntaktické chyby jsou tedy vcelku jednoduché na odchycení a lze se jich zbavit okamžitě. Logické chyby jsou v tomto ohledu mnohem komplikovanější. Namísto pomyslného boje proti compileru, nebo typové kontrole se jedná o boj proti sobě. Logické chyby se dají odchytit pouze užíváním výsledného produktu a zjištěním jiného stavu než je očekávaný. 
+\chapter{Testy a CICD} \label{testing&cicd}
+Ve vývoji softwaru se často setkáváme s různými druhy chyb, včetně těch logických \ref{alzahrani2021common}. Jiné chyby, jako syntaktické, mohou být detekovány během kompilace. V současnosti mohou být tyto chyby identifikovány i dříve prostřednictvím moderních editorů podporujících LSP. Syntaktické chyby jsou tak relativně snadno zjistitelné a okamžitě řešitelné. Naopak, logické chyby představují složitější problém. Zatímco u syntaktických chyb jde o interakci s kompilátorem nebo typovým systémem, logické chyby vyžadují introspektivní přístup. Tyto chyby lze detekovat výhradně při práci s konečným produktem, kdy je zpozorován rozdíl mezi očekávaným a skutečným stavem.
 
 Řešení tohoto problému je jasné, po implementaci je potřeba program vyzkoušet a zjistit, zda všechny potřebné komponenty fungují tak, jak mají. Tento proces je ale velmi zdlouhavý a často opomenutý z několika důvodů, mezi které se zahrnuje jak lenost, tak vytíženost, stejně jako změna priorit. Pro zjednodušení a zrychlení celého tohoto procesu byla na bakalářské práci využita implementace testování a CICD.
 
@@ -7,10 +7,13 @@ V softwarovém vývoji se lze potkat výhradně s dvěma typy chyb. Jedná se o 
 Testy jsou pouze implementovány pro backendovou část bakalářské práce. Zpracování je díky pečlivému odchycení chyb a vracení správných Status kódů vymezeno pouze na poslání dotazu na API a následné kontrole daného HTTP kódu. Testy jsou implementovány v programovacím jazyce python s pomocí knihovny pytest.
 
 \section{CI/CD}
-CI/CD představuje sérii kroků provedených automaticky při změnách v kódu. V této práci byla tato vývojová filozofie adaptována v obou formách pomocí github actions. viz Využité technologie.
+CI/CD představuje sérii kroků provedených automaticky při změnách v kódu. V této práci byla tato vývojová filozofie adaptována v obou formách pomocí github actions. viz \ref{techstack} Využité technologie. Všechny tyto technologie jsou úzce spojené s verzovacími koncepty, jako je koncept různých vývojových větví, pull requestů a pod. Tyto koncepty jsou specifické pro zvolený verzovací systém git a cloudové uložiště GitHub.
 
-\section{CD - Continuous deployment}
-Co se kontinuálního nasazení kódu týče, tak řeší tvorbu Docker kontejneru. Tento kontejner je vytvořen jinak pro jiné účely. Pokud je pud pro spuštění automatického nasazení vyvolán pomocí vytvoření/přidání změn do pull requestu, tak se vytvoří a pošle tag s odpovídajícím číslem pull requestu. Pokud se jedná o sloučení do hlavní vývojové větve main, tak se jedná o tag latest.
+\subsection{CD - Continuous deployment}
+Co se kontinuálního nasazení kódu týče, tak řeší tvorbu Docker kontejneru. Tento kontejner je vytvořen jinak pro jiné účely. Pokud je půd pro spuštění automatického nasazení vyvolán pomocí vytvoření/přidání změn do pull requestu, tak se vytvoří a pošle tag s odpovídajícím číslem pull requestu. Pokud se jedná o sloučení do hlavní vývojové větve main, tak se jedná o tag latest.
 
-\section{CI - Continuous integration}
+\subsection{CI - Continuous integration}
 V rámci kontinuální integrace se řeší spuštění testů pro API. Obecně jde o proces zajištění splnění funkčních i nefunkčních parametrů, jež program aplikuje. Mezi funkční parametry se zahrnuje samotná funkčnost kódu a splnění nároků implementované funkce. Nefunkční parametry zahrnují věci obecné ke kvalitě kódu, linting, formátování, a pod.
+
+\section{Git \& Github}
+Jelikož jsou všechny tyto koncepty spojené s verzováním kódu, je potřeba zmínit, že pro aplikace těchto postupů a verzování kódu byly využity technologie Git a GitHub. Pro bližší popis těchto technologií se lze odkázat do kapitoly \ref{techstack}.

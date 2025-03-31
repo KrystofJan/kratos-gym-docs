@@ -7,10 +7,10 @@
 \end{figure}
 
 \subsubsection{Popis dat}
-Tato sekce se věnuje popisu nejdůležitějších tabulek, které můžeme vidět v ER-modelu. Jedná se o Rezervaci, Přístroje, Plán a "plan\_machine", která reprezentuje jednotlivý přístroj a detaily uživatelské interakce s ním v daném plánu. Ostatní tabulky slouží primárně k uchovávání doplňujících informací nebo ke správě relací mezi výše uvedenými tabulkami.
+Tato sekce se věnuje popisu nejdůležitějších tabulek, které můžeme vidět v ER-modelu. Jedná se o následující 4 tabulky: reservation (rezervace), machine (přístroj), plan (tréninkový plán), plan\_machine (slouží jako vztah mezi přístrojem a plánem, můžeme chápat jako reprezentaci časového okna). Ostatní tabulky slouží primárně k uchovávání doplňujících informací nebo ke správě relací mezi výše uvedenými tabulkami.
 
 \begin{table}[h!]
-	\caption{Reservation}
+	\caption{Popis databázové tabulky - reservation}
     \label{tab:dat-dictionary-reservation}
 	\begin{tabular}{|p{3.5cm}|p{2cm}|p{1cm}|p{2.5cm}|p{.75cm}|p{3.75cm}|}
 		\hline
@@ -32,7 +32,7 @@ Tato sekce se věnuje popisu nejdůležitějších tabulek, které můžeme vid�
 \end{table}
 
 \begin{table}[h!]
-	\caption{Machine}
+	\caption{Popis databázové tabulky - machine}
     \label{tab:dat-dictionary-machine}
 	\begin{tabular}{|p{3.5cm}|p{2cm}|p{1cm}|p{2.5cm}|p{.75cm}|p{3.75cm}|}
 		\hline
@@ -56,7 +56,7 @@ Tato sekce se věnuje popisu nejdůležitějších tabulek, které můžeme vid�
 \end{table}
 
 \begin{table}[h!]
-	\caption{plan}
+	\caption{Popis databázové tabulky - plan}
     \label{tab:dat-dictionary-plan}
 	\begin{tabular}{|p{3.5cm}|p{2cm}|p{1cm}|p{2.5cm}|p{.75cm}|p{3.75cm}|}
 		\hline
@@ -72,7 +72,7 @@ Tato sekce se věnuje popisu nejdůležitějších tabulek, které můžeme vid�
 \end{table}
 
 \begin{table}[h!]
-	\caption{plan\_machine}
+	\caption{Popis databázové tabulky - plan\_machine}
     \label{tab:dat-dictionary-plan-machine}
 	\begin{tabular}{|p{3.5cm}|p{2cm}|p{1cm}|p{2.5cm}|p{.75cm}|p{3.75cm}|}
 		\hline
@@ -95,9 +95,9 @@ Tato sekce se věnuje popisu nejdůležitějších tabulek, které můžeme vid�
 \end{table}
 
 \subsubsection{Procedury a funkce}
-Konkrétní procedury a funkce budou popsány v pozdější části této práce. Klíčovým aspektem návrhu je určení, které operace bude efektivnější realizovat na úrovni databáze a které na aplikační vrstvě. Toto rozhodnutí je zásadní, protože ovlivňuje nejen efektivitu a přehlednost řešení, ale také jeho dlouhodobou udržovatelnost.
+Konkrétní procedury a funkce budou popsány v pozdější části této práce. Klíčovým aspektem návrhu je určení, které operace budou efektivnější realizovat na úrovni databáze a které na aplikační vrstvě. Toto rozhodnutí je zásadní, protože ovlivňuje nejen efektivitu a přehlednost řešení, ale také jeho dlouhodobou udržovatelnost.
 
-Procedury a funkce jsou v kontextu navržené architektury využity pro extrakci komplexních datových struktur, nejsou však aplikovýny pro jiné operace jako například manipulace s daty, nebo složitější transakce. Toto rozhodnutí vychází ze dvou východisek:
+Procedury a funkce jsou v kontextu navržené architektury využity pro extrakci komplexních datových struktur, nejsou však aplikovány pro jiné operace, jako například manipulace s daty, nebo složitější transakce. Toto rozhodnutí vychází ze dvou východisek:
 
 \begin{description}
     \item[Minimalizace funkcionality databázové vrstvy] 

@@ -1,57 +1,70 @@
-Tato kapitola popisuje technologie použité ve vývoji této bakalářské práce a vysvětluje jejich funkci v rámci jednotlivých vrstev. Ústřední roli v celém ekosystému hraje JavaScript, který se stal jádrem celého vývojového procesu. Tato volba vycházela z mnoha později uvedených důvodů, ale i přes to, že odpovídá široce rozšířené praxi, byla klíčová pro volbu ostatních technologií.
+Tato kapitola se zaměřuje na technologie využité při vývoji systému popsaného v této bakalářské práci. Jednotlivé technologie jsou zde představeny v kontextu jejich funkce v rámci využití napříč vrstvami v systému. Cílem této části je poskytnout čtenáři přehled o nástrojích a prostředích, které byly zvoleny, a zároveň objasnit důvody, proč byly konkrétní technologie preferovány před jinými.
 
-V bakalářské práci jsou použity následující technologie, jejichž popis a důvod použití se nachází níže:
+Ústřední roli v celém ekosystému hraje JavaScript, který se stal jádrem celého vývojového procesu. Tato volba vycházela z mnoha později uvedených důvodů, ale i přesto, že odpovídá široce rozšířené praxi, byla klíčová pro volbu ostatních technologií.
+
+Tato bakalářská práce prošla několika vývojovými iteracemi. V klíčových změnách týkajících se výběru technologií mezi těmito různými verzemi systému bude podrobně pojednáno v části nazvané změněné technologie.Konečný soubor technologií zahrnuje následující technologie: 
 \begin{itemize}
-    \item JavaScript/TypeScript
-    \item PostgreSQL
-    \item Node.js
-    \item Express.js
-    \item Vue.js
-    \item Tailwind CSS
-    \item ShadCN
-    \item Clerk
-    \item Zod
-    \item Docker
-    \item Git / Github
-    \item CICD - Github Actions
-    \item Python \& pytest
+    \item \textbf{Backend}
+        \begin{itemize}
+            \item PostgreSQL
+            \item JavaScript/TypeScript
+            \item Node.js
+            \item Express.js
+        \end{itemize}
+    \item \textbf{Frontend}
+        \begin{itemize}
+            \item Vue.js
+            \item Tailwind CSS
+            \item ShadCN
+            \item Clerk
+            \item Zod
+        \end{itemize}
+    \item \textbf{Testy \& CICD}
+        \begin{itemize}
+            \item Docker
+            \item Git / Github
+            \item CICD - Github Actions
+            \item Python \& pytest
+        \end{itemize}    
 \end{itemize}
 
+V následujících podkapitolách jsou proto jednotlivé technologie detailně popsány včetně jejich výhod, nevýhod a konkrétního využití v rámci systému.
+
 \section{JavaScript}
-JavaScript je základním stavebním kamenem projektu. Byla v něm i napsána úplně první verze celého backendu. V projektu byl JavaScript použit z několika důvodů:
+JavaScript je základním stavebním kamenem praktické implementace této bakalářské práce. Byla v něm i napsána úplně první verze celého backendu. V projektu byl JavaScript použit z několika důvodů:
 
 \begin{description}
-  \item[Rozšířená komunita] \hfill \\ Javascript má obrovskou komunitu vývojářů, která nabízí bohatou podporu a nespočet open-source knihoven a frameworků, což usnadňuje a zrychluje vývoj.
-  \item[Nativní podpora ve webových prohlížečích] \hfill \\ I v dnešní době, kdy máme mnohem více možností, je javascript jazyk stále "Jazykem webu" a běží nativně ve všech moderních prohlížečích, což z něj činí téměř nezbytnou součást vývoje webových aplikací. Pro jednoduchost a jednotu mezi vrstvami dávalo smysl používat jeden jazyk.
+  \item[Rozšířená komunita] \hfill \\ Javascript má obrovskou komunitu vývojářů, která nabízí bohatou podporu a nespočet open-source knihoven a frameworků, což usnadňuje a zrychluje vývoj \cite{dev52MDevelopers}.
+  \item[Nativní podpora ve webových prohlížečích] \hfill \\ I v dnešní době, kdy máme mnohem více možností, je javascript jazyk stále "Jazykem webu"\cite{ranjan2020javascript} a běží nativně ve všech moderních prohlížečích\cite{browserstackJavaScriptCode}, což z něj činí téměř nezbytnou součást vývoje webových aplikací. Pro jednoduchost a jednotu mezi vrstvami dávalo smysl používat jeden jazyk.
 \end{description}
 
-Použití JavaScriptu umožnilo rychlý start a flexibilní rozvoj projektu. Samozřejmě, že jeho volba s sebou přinesla i některé problémy a úskalí, se kterými jsem se musel v průběhu projektu vypořádat. Tyto přešlapy si později rozebereme v retrospektivě.
+Použití JavaScriptu umožnilo rychlý start a flexibilní rozvoj projektu. Samozřejmě, že jeho volba s sebou přinesla i některé problémy a úskalí, se kterými se bylo potřeba v průběhu vývoje vypořádat. Tyto přešlapy jsou více popsány v retrospektivě.
 
 V pozdější části implementace došlo k rozhodnutí přejít na TypeScript, což bylo důležitým krokem směrem k lepší struktuře a stabilitě kódu.
 
 \subsection{TypeScript}
 Je to open-source programovací jazyk vyvíjený společností Microsoft \cite{typescriptlangDocumentationTypeScript}, který je postavený na JavaScriptu a rozšiřuje ho o typovou kontrolu\cite{goldberg2022learning}. TypeScript poskytuje výhodu především ve větších projektech, kde je potřeba zajistit stabilitu a minimalizovat chyby spojené s dynamickým typováním JavaScriptu.
 
-Statická typová kontrola v TypeScriptu umožňuje odhalit chyby již během psaní kódu a nabízí větší jistotu při refactoringu \cite{enwiki:1258410189}. Přestože TypeScript stále generuje běžný JavaScript, přináší strukturálnější a bezpečnější vývojový proces, což významně zlepšilo kvalitu kódu v tomto projektu.
+Statická typová kontrola v TypeScriptu umožňuje odhalit chyby již během psaní kódu a nabízí větší jistotu při refactoringu \cite{enwiki:1258410189}. Přestože TypeScript stále generuje běžný JavaScript, přináší strukturovanější a bezpečnější vývojový proces, což významně zlepšilo kvalitu kódu.
 
 \section{PostgreSQL}
-PostgreSQL je open-source objektově-relační databázový systém, který byl v tomto projektu zvolen jako hlavní databázové řešení \cite{postgresqlPostgreSQL}. Tento databázový systém je známý svou stabilitou, rozšiřitelností a podporou pokročilých funkcí, jako jsou uložené procedury, transakce nebo plná podpora ACID (Atomicita, Konzistence, Izolace, Trvalost). PostgreSQL nabízí škálovatelnost a spolehlivost, které jsou klíčové pro náročné webové aplikace.
+PostgreSQL je open-source objektově-relační databázový systém, který byl v této práci zvolen jako databázové řešení \cite{postgresqlPostgreSQL}. Tento databázový systém je známý svou stabilitou, rozšiřitelností a podporou pokročilých funkcí, jako jsou uložené procedury, transakce nebo plná podpora ACID (Atomicita, Konzistence, Izolace, Trvalost). PostgreSQL nabízí škálovatelnost a spolehlivost, které jsou klíčové pro náročné webové aplikace.
 
-Inicialní verze byla vyvinuta pomocí MySQL, protože jsem tuto technologii dobře znal. Přešel jsem na PostgreSQL kvůli možnosti využít bezplatného hostingu. Aplikaci jsem zpočátku vytvářel na různých zařízeních a usiloval jsem o zachování datové konzistence bez nutnosti migračního systému. Nakonec jsem se rozhodl změnit přístup kvůli některým omezením, a nyní je vše uloženo v Docker kontejneru.
+Prvotní verze byla vytvořena s použitím MySQL, protože jsem s touto technologií v minulosti již pracoval. Migrace na PostgreSQL proběhla, kvůli možnosti využítí bezplatného hostingu. Aplikace byla zpočátku vyvíjena na různých zařízeních a usiloval jsem o zachování datové konzistence bez nutnosti migračního systému. Nakonec tento požadavek vymizel a s ním i potřeba hostovat databázi mimo lokální prostředí. Nyní databáze běží v Docker kontejneru.
 
 \section{Node.js}
-Aby program běžel, tak většína programovaních jazyků má nějaké běhové prostředí (Ang. Runtime environment) \cite{enwiki:1245152116}. Při vývoje JavaScriptu byl vytvořen "JavaScript engine" pro webový prohlížeč Netscape Navigator. V podstatě se jednalo o velmi jednoduchý interpreter. Později se tento engine se později vyvinul v SpiderMonkey, který je dodnes používán v prohlížeči Mozilla Firefox\cite{newJavaScriptEngineModuleOwner}. Alternativa pro chromium se nazývá V8.
+Pro spuštění a chod programu potřebují programovací jazyky specifické běhové prostředí (Ang. Runtime environment)\cite{enwiki:1245152116}. Při vývoji JavaScriptu byl vytvořen "JavaScript engine" pro webový prohlížeč Netscape Navigator. V podstatě se jednalo o velmi jednoduchý interpretor. Později se tento engine vyvinul v SpiderMonkey, který je dodnes používán v prohlížeči Mozilla Firefox \cite{newJavaScriptEngineModuleOwner}. Alternativa pro Chromium se nazývá V8\cite{v8JavaScriptEngine}.
 
 Node.js poskytuje běhové prostředí pro JavaScript mimo prohlížeč. Vznikl v roce 2009 a umožnil použití JavaScriptu pro serverové aplikace. Je postaven na enginu V8 a díky tomu je velmi výkonný a efektivní.\cite{nodejsNodejsAbout}
 
 Node.js je dnes největším běhovým prostředím pro JavaScript na světě. Kromě možnosti tvorby serverových aplikací poskytuje ekosystém balíčků spravovaný přes npm (Node Package Manager), což je největší repozitář softwarových balíčků na světě.\cite{npmjsAboutDocs}
 
-Mezi alternativy patří například Bun a Deno, avšak Node.js stále představuje průmyslový standard, což je i důvod, proč byl zvolen pro tuto práci.
+Mezi alternativy patří například Bun a Deno, avšak Node.js stále představuje průmyslový standard, což je i důvod, proč byl zvolen pro tuto práci\cite{chhetri2016comparative}.
 
 \section{Express.js}
 Express.js je minimalistický webový framework pro Node.js, který byl použit pro tvorbu aplikačního programového rozhraní (API). Express usnadňuje práci s HTTP metodami a nabízí jednoduchou, ale flexibilní strukturu pro vývoj REST API\cite{expressjsExpressNodejs}.
 
-Express umožnuje jednoduchou, ale transparentní práci s HTTP metodami z něho tvoří oblíbenou volbu pro vývoj awebových aplikací všech velikostí. V tomto projektu funguje jako komunikační most mezi frontendem a databází.
+Express umožňuje jednoduchou, ale transparentní práci s HTTP metodami, z něhož tvoří oblíbenou volbu pro vývoj webových aplikací všech velikostí. V této práci byl využit pro tvorbu REST API, které funguje jako komunikační most mezi frontendem a databází.
 
 \section{Vue.js}
 Vue.js je progresivní open-source framework pro tvorbu uživatelských rozhraní\cite{vuejsVuejs}. Byl zvolen pro frontend tohoto projektu díky své jednoduchosti a flexibilitě. Vue.js umožňuje rychlý vývoj komponent, které jsou zabaleny do velmi přehledné struktury.
@@ -89,24 +102,24 @@ const counter = ref(0);
 Proměnná counter je obalena proxy objektem, který automaticky detekuje změny prostřednictvím getterů a setterů generovaných funkcí ref(). Mutace hodnoty přímým přiřazením (counter++) spouští reaktivní aktualizaci DOM bez nutnosti manuálního volání setterů.
 
 \section{Tailwind CSS}
-Tailwind je framework pro CSS, který výrazně zrychluje stylování uživatelského rozhraní. Namísto tradičních předpřipravených komponent nabízí Tailwind množství utility tříd, které lze kombinovat a vytvářet tak design přímo v HTML komponentách.
+Tailwind je framework pro CSS, který výrazně zrychluje stylování uživatelského rozhraní \cite{tailwindcssTailwindRapidly}. Namísto tradičních předpřipravených komponent nabízí Tailwind množství utility tříd, které lze kombinovat a vytvářet tak design přímo v HTML komponentách.
 
 Použití Tailwindu v tomto projektu umožnilo vytvořit flexibilní a rychle upravitelný design bez nutnosti psát samotné CSS.
 
 \section{Shadcn}
-Shadcn je sada komponent pro výhradně pro React a Tailwind, která zjednodušuje integraci uživatelského rozhraní do aplikací. Umožňuje rychlé nasazení a styling komponent pomocí Tailwind CSS, čímž snižuje čas potřebný na vývoj frontendu. Jedná se o předem nastylované Radix komponenty.
+Shadcn je sada komponent pro výhradně pro React a Tailwind, která zjednodušuje integraci uživatelského rozhraní do aplikací. Umožňuje rychlé nasazení a styling komponent pomocí Tailwind CSS, čímž snižuje čas potřebný na vývoj frontendu. Jedná se o předem nastylované Radix komponenty \cite{shadcnIntroduction}.
 
-Narozdíl od ostatních sad komponent, jako například Bootstrap, shadcn přidá kód komponent přímo do projektu, tudíž jsou plně upravitelné. Vue komunita vytvořila svou neoficiální verzi Shadcn s názvem Shadcn-vue, která byla v této práci využita.
+Narozdíl od ostatních sad komponent, jako například Bootstrap, shadcn přidá kód komponent přímo do projektu, tudíž jsou plně upravitelné. Vue komunita vytvořila svou neoficiální verzi Shadcn s názvem Shadcn-vue, která byla v této práci využita \url{https://www.shadcn-vue.com/}.
 
 Použití této knihovny komponent ulehčilo vývoj webového uživatelského rozhraní s dodáním celistvého vzhledu.
 
 \section{Clerk}
-Clerk je autentizační a správcovská služba uživatelů, která zjednodušuje implementaci přihlašování, registrací a správy uživatelů v aplikacích. Nabízí snadnou integraci s frontendovými technologiemi, jako je Vue.js
+Clerk je autentizační a správcovská služba uživatelů, která zjednodušuje implementaci přihlašování, registrací a správy uživatelů v aplikacích. Nabízí snadnou integraci s frontendovými technologiemi, jako je Vue.js\cite{clerkClerkAuthentication}. 
 
-V tomto projektu je Clerk použit pro autentikaci, což zajišťuje bezpečný přístup k aplikaci.
+V tomto projektu je Clerk použit pro autentizaci, což zajišťuje bezpečný přístup k aplikaci.
 
 \section{Zod}
-Zod je knihovna pro validaci dat. Umožňuje definovat schémata, která popisují tvar dat, a následně je validovat.
+Zod je knihovna pro validaci dat. Umožňuje definovat schémata, která popisují tvar dat, a následně je validovat \cite{zodTypeScriptfirstSchema}.
 
 V tomto projektu je Zod využíván v validace dat přicházející ze shadcn formulářů. Tímto zajišťuje konzistenci a správnost dat na serverové straně.
 
@@ -116,16 +129,16 @@ Docker je nástroj, který slouží k vývoji, distribuci a spouštění aplikac
 V rámci tohoto projektu Docker poskytuje efektivní a rychlé řešení, které umožňuje vývoj a distribuci aplikace napříč různými platformami.
 
 \section{Git / Github}
-Git je distribuovaný systém pro správu verzí, který umožňuje efektivní sledování změn a správu různých verzí souborů. Je široce využíván díky své flexibilitě a podpoře týmové spolupráce, čímž se stal standardem mezi verzovacími systémy \cite{enwiki:1261616505}. %\cite{gitscmWhatGit}.
+Git je distribuovaný systém pro správu verzí, který umožňuje efektivní sledování změn a správu různých verzí souborů. Je široce využíván díky své flexibilitě a podpoře týmové spolupráce, čímž se stal standardem mezi verzovacími systémy \cite{spinellis2012git}.
 
 V na tomto projektu byl Git nasazen od počátku jako klíčový nástroj pro verzování. Pro sdílení a správu repozitáře byl zvolen GitHub, populární platforma rozšiřující Git o funkce pro ukládání, správu a spolupráci v cloudu. Díky svému intuitivnímu prostředí se GitHub stal oblíbeným řešením pro projekty všech velikostí \cite{githubAboutGitHub}.
 
 \section{CICD - Github actions}
-GitHub Actions je platforma pro kontinuální integraci a doručování (CI/CD), která umožňuje automatizovat procesy, jako jsou sestavení, testování a nasazování aplikací. S GitHub Actions lze vytvářet pracovní postupy, které automaticky sestaví a otestují každou pull requestu v repozitáři, nebo nasadí sloučené pull requesty přímo do produkce\cite{githubinc_2024_understanding}.
+GitHub Actions je platforma pro kontinuální integraci a doručování (CI/CD), která umožňuje automatizovat procesy, jako jsou sestavení, testování a nasazování aplikací. S GitHub Actions lze vytvářet pracovní postupy, které automaticky sestaví a otestují každý pull request v repozitáři, nebo nasadí sloučené pull requesty přímo do produkce\cite{githubinc_2024_understanding}.
 
-Při vývoji rezervačního systému byly github actions především použity pro vytvoření docker kontejneru a pro spuštění testů
+Při vývoji rezervačního systému byly GitHub Actions především použity pro vytvoření Docker kontejneru a pro spuštění testů.
 
 \section{Python a pytest}
-Python je vysoce úrovňový interpretovaný skriptovací jazyk, který se vyznačuje unikátním způsobem strukturování kódu. Namísto tradičního používání složených závorek pro seskupování bloků kódu využívá Python bílých znaků (whitespace), což přispívá k jeho čitelnosti a jednoduchosti \cite{enwiki:1262860862, enwiki:1259453401}.
+Python je vysoce úrovňový interpretovaný skriptovací jazyk, který se vyznačuje unikátním způsobem strukturování kódu. Namísto tradičního používání složených závorek pro seskupování bloků kódu využívá Python bílých znaků (whitespace), což přispívá k jeho čitelnosti a jednoduchosti \cite{kuhlman2009python, van1990functional}.
 
 V rámci tohoto projektu je Python využit pro vývoj API testů, přičemž byl využit framework pytest. Pytest je vcelku jednoduchý a s kombinací s možností rychlého vývoje v Pythonu toto technologické rozhodnutí umožnilo opravdu rychlý vývoj jednoduchých testů.
