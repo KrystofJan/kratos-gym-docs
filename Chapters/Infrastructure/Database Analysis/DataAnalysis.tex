@@ -16,17 +16,17 @@ Tato sekce se věnuje popisu nejdůležitějších tabulek, které můžeme vid�
 		\hline
         \textbf{Název atributu} & \textbf{Dat. Typ} & \textbf{Délka} & \textbf{Klíč} & \textbf{Null} & \textbf{Popis} \\
         \hline
-        reservation\_id & INT & - & Primary & Ne & Id rezervace \\
+        reservation\_id & INTEGER & - & Primární & Ne & Id rezervace \\
         \hline
-        ammout\_of\_people & INT & - & - & Ne & Počet lidí \\
+        ammout\_of\_people & INTEGER & - & - & Ne & Počet lidí \\
         \hline
         reservation\_time & DATE & - & - & Ne & Čas příchodu \\
         \hline
-        customer\_id & INT & - & Cizí (account) & Ne & Id uživatele, na kterého je rezervace napsaná \\
+        customer\_id & INTEGER & - & Cizí (account) & Ne & Id uživatele, na kterého je rezervace napsaná \\
         \hline
-        trainer\_id & INT & - & Cizí (account) & Ne & Id trenéra \\
+        trainer\_id & INTEGER & - & Cizí (account) & Ano & Id trenéra \\
         \hline
-        plan\_id & INT & - & Cizí (plan) & Ne & Id plánu \\
+        plan\_id & INTEGER & - & Cizí (plan) & Ne & Id plánu \\
         \hline
 	\end{tabular}
 \end{table}
@@ -38,13 +38,13 @@ Tato sekce se věnuje popisu nejdůležitějších tabulek, které můžeme vid�
 		\hline
         \textbf{Název atributu} & \textbf{Dat. Typ} & \textbf{Délka} & \textbf{Klíč} & \textbf{Null} & \textbf{Popis} \\
         \hline
-            machine\_id & INTEGER   &  -    & Primary       & Ne & Id stroje \\
+            machine\_id & INTEGER   &  -    & Primární       & Ne & Id stroje \\
             \hline
             machine\_name     & VARCHAR   &  64   & -                 & Ne & Název stroje \\
             \hline
             max\_weight       & FLOAT   &  -   & -                 & Ne &  Maximální váha, kterou lze použít \\
             \hline
-            min\_weight       & FLOAT   &  1    & -                 & Ne &  Minimální váha, kterou lze použít \\
+            min\_weight       & FLOAT   &  -    & -                 & Ne &  Minimální váha, kterou lze použít \\
             \hline
             max\_people       & INTEGER   &  -  & -                 & Ne & Maximální počet lidí na stroji \\
             \hline
@@ -62,11 +62,11 @@ Tato sekce se věnuje popisu nejdůležitějších tabulek, které můžeme vid�
 		\hline
         \textbf{Název atributu} & \textbf{Dat. Typ} & \textbf{Délka} & \textbf{Klíč} & \textbf{Null} & \textbf{Popis} \\
         \hline
-            plan\_id & INTEGER   &  -    & Primary       & Ne & Id plánu \\
+            plan\_id & INTEGER   &  -    & Primární       & Ne & Id plánu \\
         \hline
             plan\_name     & VARCHAR   &  64   & -                 & Ne & Název plánu \\
         \hline
-            account\_id     & INTEGER   &  -   & -                 & Ne & Id uživatele, který vytvořil plán \\
+            account\_id     & INTEGER   &  -   & Cizí (account)                 & Ne & Id uživatele, který vytvořil plán \\
         \hline
 	\end{tabular}
 \end{table}
@@ -82,14 +82,15 @@ Tato sekce se věnuje popisu nejdůležitějších tabulek, které můžeme vid�
         \hline
             machine\_id     & INTEGER   &  -    & Cizí (machine)       & Ne & Id stroje \\
         \hline
-            sets                & INTEGER   &  -   & -                 & Ne & TODO \\
+            sets                & INTEGER   &  -   & -                 & Ne & počet sérií\\
         \hline
-            reps                & INTEGER   &  -    & -                 & Ne &  TODO \\
+            reps                & INTEGER   &  -    & -                 & Ne &  Počet opakování \\
+        \hline
             start\_time     & TIME      &  -    & -                 & Ne & Čas začátku \\
         \hline
             end\_time       & TIME      &  -    & -                 & Ne & čas konce \\
         \hline
-            can\_disturb          & BOOLEAN   &  1    & -                 & Ne & TODO \\
+            can\_disturb          & BOOLEAN   &  =    & -                 & Ne & povolení kolizí \\
         \hline
 	\end{tabular}
 \end{table}
@@ -97,7 +98,7 @@ Tato sekce se věnuje popisu nejdůležitějších tabulek, které můžeme vid�
 \subsubsection{Procedury a funkce}
 Konkrétní procedury a funkce budou popsány v pozdější části této práce. Klíčovým aspektem návrhu je určení, které operace budou efektivnější realizovat na úrovni databáze a které na aplikační vrstvě. Toto rozhodnutí je zásadní, protože ovlivňuje nejen efektivitu a přehlednost řešení, ale také jeho dlouhodobou udržovatelnost.
 
-Procedury a funkce jsou v kontextu navržené architektury využity pro extrakci komplexních datových struktur, nejsou však aplikovány pro jiné operace, jako například manipulace s daty, nebo složitější transakce. Toto rozhodnutí vychází ze dvou východisek:
+Procedury a funkce jsou v kontextu navržené architektury využity pro extrakci komplexních datových struktur, nejsou však aplikovány pro jiné operace, jako například manipulace s daty, nebo~složitější transakce. Toto rozhodnutí vychází ze dvou východisek:
 
 \begin{description}
     \item[Minimalizace funkcionality databázové vrstvy] 

@@ -1,12 +1,12 @@
 \subsection{ORM}
 Pro implementaci ORM jsem se rozhodl využít kombinaci reflexe a dekorátorů. Toto řešení mi umožnilo výrazně zjednodušit vývoj jednoduchých CRUD(tj. Create, Read, Update, Delete) operací pro jednotlivé koncové body. Výhodou tohoto přístupu je, že stačí definovat model, opatřit ho vhodnými dekorátory, a samotné mapování na SQL se následně provádí automaticky díky reflexi.
 
-Důvodem rozhodnutí implementace vlastního ORM byla snaha o minimalizaci externích knihoven a jiných závislostí na straně backendu. Tento přístup poskytuje řadu výhod, například: lepší kontrolu nad kódem i jeho kvalitou, jednoznačnou zodpovědnost za případné chyby a mnohé další.
+Důvodem rozhodnutí implementace vlastního ORM byla snaha o minimalizaci externích knihoven a jiných závislostí na straně backendu. Tento přístup přináší výhody, jako lepší kontrolu nad kódem, vyšší kvalitu a jednoznačnou odpovědnost za případné chyby.
 
 Konkrétní implementační detaily budou popsány v následující části.
 
 \subsubsection{Dekorátory}
-Dekorátory umožňují rozšířit funkcionalitu běžných tříd pomocí metadat nebo různých nadstaveb, které „dekorují“ danou třídu nebo její atributy\cite{TSDecorators}. V kontextu této práce byly tyto dekorátory implementovány přímo pro potřeby projektu, zejména pro přesné mapování objektových modelů na databázové tabulky a sloupce. Mezi naimplementovanými dekorátory vznikajícími přímo pro tuto architekturu lze rozlišit několik typů:
+Dekorátory umožňují rozšířit funkcionalitu běžných tříd pomocí metadat nebo různých nadstaveb, které „dekorují“ danou třídu nebo její atributy\cite{TSDecorators}. V kontextu této práce byly tyto dekorátory implementovány přímo pro potřeby projektu, zejména pro přesné mapování objektových modelů na databázové tabulky a sloupce. Mezi implementované dekorátory vytvořené přímo pro tuto architekturu lze rozlišit několik typů:
 \begin{description}
     \item[Table] 
     Tento dekorátor slouží k přiřazení názvu tabulky dané třídě. Pomocí reflexe je název tabulky propojen s třídou, která ji reprezentuje, což usnadňuje práci při mapování modelů na SQL.
@@ -23,7 +23,7 @@ Dekorátor určený pro označení cizího klíče. Do dekorátoru se předává
 Označuje atributy, které mají být při vkládání dat do databáze ignorovány. Je využíváno pro zamezení vložení atributu, jejichž hodnota je nastavována skrze základní hodnoty v databázi. Například create\_date v tabulce account.
 
 \item[DifferentlyNamedForeignKey]  
-Používá se v případě, kdy atribut reprezentuje cizí klíč, ale jeho název se liší od názvu primárního klíče v odkazované tabulce. Tento dekorátor řeší situace, kdy databázová struktura neodpovídá standardnímu pojmenování. Například mějme cizí klíč \texttt{customer\_id}, který odkazuje na tabulku \texttt{account}, jenže PK má v dané tabulce název \texttt{account\_id}.
+Používá se v případě, kdy atribut reprezentuje FK ale jeho název se liší od názvu primárního klíče v odkazované tabulce. Tento dekorátor řeší situace, kdy databázová struktura neodpovídá standardnímu pojmenování. Například mějme FK \texttt{customer\_id}, který odkazuje na tabulku \texttt{account}, jenže PK má v dané tabulce název \texttt{account\_id}.
 
 \item[UnUpdatable]  
 Podobně jako \texttt{UnInsertable} tento dekorátor zajišťuje, že atributy označené tímto dekorátorem budou ignorovány při požadavku aktualizace dat.

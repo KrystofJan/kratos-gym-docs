@@ -4,7 +4,7 @@ Tato bakalářská práce byla z mého pohledu velmi přínosná. Nicméně stej
 
 \section{Technologické Problémy}
 
-Jeden z více osobních problémů, které nastaly, byly brzká technologická rozhodnutí. Důvody volby těchto technologií byly popsány v kapitole Využité technologie. Zde jsou popsány konkrétní překážky, jež byly spojovány s těmito rozhodnutími.
+Jeden z více osobních problémů, které nastaly, byla brzká technologická rozhodnutí. Důvody volby těchto technologií byly popsány v kapitole Využité technologie. Zde jsou popsány konkrétní překážky, jež byly spojovány s těmito rozhodnutími.
 
 \subsection{Javascript}
 Jak jsem již na začátku zmiňoval, tato technologická volba nese i značné nevýhody, jako například:
@@ -13,15 +13,14 @@ Jak jsem již na začátku zmiňoval, tato technologická volba nese i značné 
 \item[Dynamické datové typy] 
 Dynamicky typované jazyky jsou náchylné na větší chybovost a menší kvalitu kódu \cite{pang2018programming}. V bakalářské práci se osvědčilo použití statických typů, které pomohly lépe definovat výstupy a vstupy.
 \item[Chybějící vlastnosti jazyka] 
-Jelikož JavaScript je dynamicky typovaný jazyk, chybí v něm koncepty jako například enum, interface a mnoho dalších, které například TypeScript dodává \cite{typescriptlangHandbookEnums, typescriptlangHandbookInterfaces}.
+Jelikož JavaScript je dynamicky typovaný jazyk, chybí v něm koncepty jako například enum, interface a mnoho dalších, které například TS dodává \cite{typescriptlangHandbookEnums, typescriptlangHandbookInterfaces}.
 \item[Řešení výjimek]
-Javascript má oproti více moderním programovacím jazykům mě osobně nevyhovující systém odchytávání chyb. Javascript používá systém try/catch/finally, který se v moderních jazycích postupně nahrazuje konceptem Errors as values. Tato nevýhoda je pouze osobní preferencí, ale tato preference je podmíněna. Pokud například mám určitou funkci, při jejímž průběhu může nastat chyba, tak v jazycích, které mají chybovatelné typy (například Result enum v Rustu), či funkce s více vracejícími hodnotami (jako například v Go), se jednoduše vrátí jiný výsledek. Díky tomuto přístupu je programátor nucen chybu ošetřit, aby se ujistil o existenci správného výsledku. To vede k robustnějšímu kódu. Pokud ale můžeme jednoduše výjimku vyhodit, čímž průběh programu narušíme a funkce stále vrací stejný typ, není přímo z definice této funkce jasné, zda může vyhodit výjimku. Jsme v tu chvíli nuceni tuto záležitost odchytávat při tom, jak na ni narazíme. To se stává problémem, když interagujeme s námi nenapsaným kódem.
+JS má oproti více moderním programovacím jazykům mě osobně nevyhovující systém odchytávání chyb. JS používá systém try/catch/finally, který se v moderních jazycích postupně nahrazuje konceptem Errors as values. Tato nevýhoda je pouze osobní preferencí, ale~tato preference je podmíněna. Pokud například mám určitou funkci, při jejímž průběhu může nastat chyba, tak v jazycích, které mají chybovatelné typy (například Result enum v Rustu), či funkce s více vracejícími hodnotami (jako například v Go), se jednoduše vrátí jiný výsledek. Díky tomuto přístupu je programátor nucen chybu ošetřit, aby se ujistil o existenci správného výsledku. To vede k robustnějšímu kódu. Pokud ale můžeme jednoduše výjimku vyhodit, čímž průběh programu narušíme a funkce stále vrací stejný typ, není přímo z definice této funkce jasné, zda může vyhodit výjimku. Jsme v tu chvíli nuceni tuto záležitost odchytávat při tom, jak na ni narazíme. To se stává problémem, když interagujeme s námi nenapsaným kódem.
 \end{description}
 
-Po několika měsících vývoje nastalo důležité technologické rozhodnutí ohledně přepsání celého backendu do jazyka TypeScript. Toto rozhodnutí bylo klíčové pro další vývoj, jelikož vyřešilo dva ze tří problémů, které jsem s JavaScriptem měl.
+Po několika měsících vývoje nastalo důležité technologické rozhodnutí ohledně přepsání celého backendu do jazyka TS. Toto rozhodnutí bylo klíčové pro další vývoj, jelikož vyřešilo dva ze tří problémů, které jsem s JavaScriptem měl.
 
-TypeScript a JavaScript mají zároveň i jeden další problém, a tím je paralelismus se sdílenou pamětí. Na malé škále, jako je tato bakalářská práce, která nepocítila velké uživatelské zatížení, to nelze úplně vidět, ale myslím si, že by se aplikace lépe škálovala, kdybych backend napsal v jiném jazyce, jako je například Go.
+TS a JS mají zároveň i jeden další problém, a tím je paralelismus se sdílenou pamětí. Na malé škále, jako je tato bakalářská práce, která nepocítila velké uživatelské zatížení, to není zřejmé, ale~myslím si, že by se aplikace lépe škálovala, kdybych backend napsal v jiném jazyce, jako je například Go.
 
 \subsection{Implementace vlastního ORM}
-
 I přesto, že jsem s momentální implementací ORM spokojený, zabrala velkou část vývoje. Tento čas by mohl být investován do jiných aspektů aplikace, které jsou popsány v možných rozšířeních práce. Tato časová investice nepřinesla až takové výhody, jaké jsem očekával. Bohužel na všechna rozšíření, jako programatické skládání dotazů, podmínek a migrační systém, čas nezbyl.

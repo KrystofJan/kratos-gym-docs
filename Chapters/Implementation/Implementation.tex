@@ -9,7 +9,7 @@ Nejprve je potřeba, aby uživatel přístroje vybral. K tomu poslouží řada c
 
 Ve výsledku budou přístroje uloženy v poli. Toto pole bude monitorováno pomocí computed property, která v sobě bude uchovávat informaci ohledně nejčastějšího id kategorie nalezeného v těchto přístrojích.
 
-Computed properties (česky: Vypočítané vlastnosti) jsou vlastnosti, které jsou vypočtené z jiných reaktivních proměnných. Jejich největší výhoda spočívá v sebekontrolování jejich závislostí, t.j. jakmile se jakákoli reaktivní proměnná, na které je vypočítaná vlastnost závislá, změní, hodnota této vlastnosti se přepočítá \cite{vuejsVuejsComputed}. Zde tato vlastnost nabývá podoby proměnné \texttt{mostFrequentCategoryId}. Computed property je definována pomocí definice getter funkce. Tato computed property bude sloužit při následném volání na API, které se uskuteční pomocí watcheru.
+Computed properties (česky: Vypočítané vlastnosti) jsou vlastnosti, které jsou vypočtené z jiných reaktivních proměnných. Jejich největší výhoda spočívá v sebekontrole jejich závislostí, t.j. jakmile se jakákoli reaktivní proměnná, na které je vypočítaná vlastnost závislá, změní, hodnota této vlastnosti se přepočítá \cite{vuejsVuejsComputed}. Zde tato vlastnost nabývá podoby proměnné \texttt{mostFrequentCategoryId}. Computed property je definována pomocí definice getter funkce. Tato computed property bude sloužit při následném volání na API, které se uskuteční pomocí watcheru.
 
 Podobně jako u computed vlastností je watch způsob, jakým lze reagovat na změnu reaktivní proměnné, ale s tím rozdílem, že watcher nedrží žádnou hodnotu. Watcher pouze sleduje reaktivní proměnnou a při její změně zavolá callback funkci. Watcher by se dal jednoduše vysvětlit jako event handler pro reaktivní proměnné ve Vue.js \cite{vuejsVuejsWatchers}.
 
@@ -42,7 +42,7 @@ const result: Machine[] = await this.sql<Machine[]>`
 `
 \end{lstlisting}
 
-Volaná procedura tedy obsahuje pouze následující SQL dotaz. Tento dotaz nám propojuje 3 tabulky. Machine (reprezentuje individuální přístroj, např. Bench, Squat rack, atd.), machine\_exercise type (reprezentuje N:M vztah mezi cvikem a přístrojem) a exercise\_type (reprezentuje cvik, např. Dřep, Biceps curl, atd.). Výsledek spojených tabulek je následně profiltrován pomocí vnořeného SQL dotazu, který vyhledává první id kategorie, které přístroj s vloženým id má. Následně se z výsledku předešlé filtrace vyjme přístroj s id v parametru procedury. Nazávěr se data sestupně seřadí podle jejich popularity.
+Volaná procedura tedy obsahuje pouze následující SQL dotaz. Tento dotaz nám propojuje 3 tabulky. Machine (reprezentuje individuální přístroj, např. Bench, Squat rack, atd.), machine\_exercise type (reprezentuje N:M vztah mezi cvikem a přístrojem) a exercise\_type (reprezentuje cvik, např. Dřep, Biceps curl, atd.). Výsledek spojených tabulek je následně profiltrován pomocí vnořeného SQL dotazu, který vyhledává první id kategorie, které přístroj s vloženým id má. Následně se z výsledku předešlé filtrace vyjme přístroj s id v parametru procedury. Na závěr se data sestupně seřadí podle jejich popularity.
 
 \begin{lstlisting}[language=SQL]
 SELECT DISTINCT m.*
@@ -59,24 +59,24 @@ WHERE et.category_id = (
 AND m.machine_id != input_machine_id
 ORDER BY m.popularity_score DESC;
 \end{lstlisting}
-Přirozeně se o tomto řešení dá říci, že je zbytečně komplikované a jelikož hledáme nejčastější kategorii na straně frontendu. Toto sebou ale nese jeden problém. Konkrétně se jedná o ten fakt, že doporučení pomocí přístroje nám nabízí více možností z ohledu dalšího rozšíření systému. Dále může jeden přístroj mít více kategorií, tudíž nemůžeme vědět jakou konkrétně chceme najít. Hledání kategorie sloužilo pouze pro vymezení možností v rámci tréninku a ne v rámci individuálních přístrojů.
+Přirozeně se o tomto řešení dá říci, že je zbytečně komplikované a jelikož hledáme nejčastější kategorii na straně frontendu. Toto sebou ale nese jeden problém. Konkrétně se jedná o ten fakt, že doporučení pomocí přístroje nám nabízí více možností z ohledu dalšího rozšíření systému. Dále může jeden přístroj mít více kategorií, tudíž nemůžeme vědět, jakou konkrétně chceme najít. Hledání kategorie sloužilo pouze pro vymezení možností v rámci tréninku a ne v rámci individuálních přístrojů.
 
-\section{Doporučení najbližšího dostupného času}
+\section{Doporučení nejbližšího dostupného času}
 
-Pro doporučení nejbližšího dostupného času se musí vzít v potaz kolize s jinými rezervacemi, což je problematika, která byla popsaná v teoretické analýze. Co popsáno ale nebylo je způsob jak tuto kolizi nalezneme v reálném čase, t.j. ve chvíli, kdy definujeme časové okno.
+Pro doporučení nejbližšího dostupného času se musí vzít v potaz kolize s jinými rezervacemi, což je problematika, která byla popsaná v teoretické analýze. Co popsáno ale nebylo, je způsob, jak tuto kolizi nalezneme v reálném čase, t.j. ve chvíli, kdy definujeme časové okno.
 
 \subsection{Hledání kolizí v reálném čase}
-Tuto část rozebíráme v praktické implementaci jelikož je řešení velmi úzce spojené s praktickou implementací na frontendu. 
+Tuto část rozebíráme v praktické implementaci, jelikož je řešení velmi úzce spojené s praktickou implementací na frontendu. 
 
-Jako jednoduché řešení se nabízí po každé změně časového okna poslat dotaz skrze API, který by vrátil počet rezervací s vypnutými kolizemi v daný čas a pokud by byl počet větší, nebo roven jedné, tak bychom časové okno označili jako kolidující. Tato metoda by však vedla k velkému počtu API požadavků, což by značně zatížilo backendový systém. Tento problém by mohl být částečně zmírněn implementací WebSockets či podobných technologií.
+Jako jednoduché řešení se nabízí po každé změně časového okna poslat dotaz skrze API, který by vrátil počet rezervací s vypnutými kolizemi v daný čas a pokud by byl počet větší nebo roven jedné, tak bychom časové okno označili jako kolidující. Tato metoda by však vedla k velkému počtu API požadavků, což by značně zatížilo backendový systém. Tento problém by mohl být částečně zmírněn implementací WebSockets či podobných technologií.
 
-Přestože snahy o zavedení výše uvedeného systému jsou lákavé kvůli fascinaci složitými přístupy, existuje mnohem intuitivnější a jednodužší alternativa. Při pokročení na krok konfigurace časového okna systém vyšle dotaz na backend pro získání rezervací pro daný den, pro každý vybraný přístroj. Tato data budou následně používána při validaci jednotlivých časových oken pomocí zod validačních schémat. Pokud systém kolizi při validaci najde, tak zašle dotaz pro vyhledání nejbližších časů pro daný přístroj.
+Přestože snahy o zavedení výše uvedeného systému jsou lákavé kvůli fascinaci složitými přístupy, existuje mnohem intuitivnější a jednodušší alternativa. Při pokročení na krok konfigurace časového okna systém vyšle dotaz na backend pro získání rezervací pro daný den, pro každý vybraný přístroj. Tato data budou následně používána při validaci jednotlivých časových oken pomocí \texttt{zod} validačních schémat. Pokud systém kolizi při validaci najde, tak zašle dotaz pro vyhledání nejbližších časů pro daný přístroj.
 
 
 \subsection{Backend}
 Na backendu algoritmus pracuje s daty získanými z databáze, která obsahují nejen plány rezervací pro daný přístroj, ale také informace o časových oknech předchozích/následujících rezervací a kapacitních omezeních. Cílem je najít nejbližší volný interval stejné délky jako požadované časové okno, a to buď před první kolidující rezervací, nebo za poslední kolidující rezervací, s ohledem na možnost povolení kolizí.
 
-Data jsou získávána pomocí následujícího sql dotazu:
+Data jsou získávána pomocí následujícího \texttt{sql} dotazu:
 \begin{lstlisting}[language=SQL]
 SELECT pm.*,
   CASE
@@ -99,7 +99,7 @@ GROUP BY
 END;
 \end{lstlisting}
 Jak si lze všimnout, tento SQL dotaz vyhledává výsledky jiné procedury. Vráceným výsledkem této procedury je každá rezervace společně s časovými okny předchozí a následující rezervace.
-Dotaz také zjistí, zda se počet lidí ve vytvářené rezervaci vleze do kolidovaných rezervací s ohledem na kapacitu daného přístroje. Výsledek těchto podmínek je booleanová hodnota can\_fit
+Dotaz také zjistí, zda se počet lidí ve vytvářené rezervaci vejde do kolidujících rezervací s ohledem na kapacitu daného přístroje. Výsledek těchto podmínek je booleanová hodnota can\_fit
 
 Dalším krokem po získání dat z databáze je aplikovat algoritmus implementovaný v metodě \texttt{SuggestTimes}, která se nachází ve třídě \texttt{MachineService}. 
 
@@ -113,9 +113,9 @@ static async SuggestTimes(
 }
 \end{lstlisting}
 
-Tato funkce příjmá výsledek dotazu na databázi v podobě pole v proměnné \texttt{machineUsage}, \texttt{desiredTimeRange} reprezentující žádáné časové okno a \texttt{canDisturb}, jež značí povolení kolizí. Metoda vrací typ \texttt{Suggestion}.
+Tato funkce přijímá výsledek dotazu na databázi v podobě pole v proměnné \texttt{machineUsage}, \texttt{desiredTimeRange} reprezentující žádané časové okno a \texttt{canDisturb}, jež značí povolení kolizí. Metoda vrací typ \texttt{Suggestion}.
 
-\texttt{Sugestion} obsahuje 2 časová okna, jedno před kolidujícím a druhé za ním. Typ \texttt{TimeRange} reprentuje časové okno samotné a tvoří jej 2 časové záznamy (Start, End) a booleanová hodnota značící existenci kolize.
+\texttt{Sugestion} obsahuje 2 časová okna, jedno před kolidujícím a druhé za ním. Typ \texttt{TimeRange} reprezentuje časové okno samotné a tvoří jej 2 časové záznamy (Start, End) a boolean hodnota značící existenci kolize.
 
 \begin{lstlisting}
 interface TimeRange {
@@ -132,13 +132,17 @@ interface Suggestion {
 Algoritmus implementovaný v metodě \texttt{SuggestTimes} následuje tyto kroky:
 \begin{enumerate}
     \item \textbf{Detekce kolizí}
-	Požadované časové okno (\texttt{desiredTimeRange}) a všechny rezervace z databáze se převedou na minutovou reprezentaci (např. 14:30 → 870 minut). Následně se vyfiltrují všechny rezervace, které s požadovaným oknem částečně nebo plně překrývají. Kolize se detekuje pomocí intervalové logiky:
+    \begin{itemize}
+	\item Požadované časové okno (\texttt{desiredTimeRange}) a všechny rezervace z databáze se převedou na minutovou reprezentaci (např. 14:30 → 870 minut). Následně se vyfiltrují všechny rezervace, které s požadovaným oknem částečně nebo plně překrývají. Kolize se detekuje pomocí intervalové logiky:
+        \end{itemize}
 \[
 K \exists \iff \max(t_{1start}, t_{2start}) \leq \min(t_{1end}, t_{2end})
 \]
-	Kdy \( t_{1} \) je čas pro danou rezervaci a \( t_{2} \) je čas pro žádané časové okno.
+\begin{itemize}
+    \item 	Kdy \( t_{1} \) je čas pro danou rezervaci a \( t_{2} \) je čas pro žádané časové okno.
 	Výsledkem je seznam \texttt{colidingPlan} s kolidujícími rezervacemi.
-	
+\end{itemize}
+
 	V kódu tato část vypadá nějak takto:
 	
     \begin{lstlisting}
@@ -163,7 +167,7 @@ const colidingPlan = machineUsage
     \begin{itemize}
     	\item Před kolidující rezervací: Pokud mezi koncem předchozí rezervace a začátkem aktuální rezervace existuje mezera větší nebo rovna délce požadovaného okna, vypočítá se okno jako \texttt{startTimeInMinutes - duration}.
     	\item Po kolidující rezervací: Pokud mezi koncem aktuální rezervace a začátkem následující rezervace existuje dostatečná mezera, vypočítá se okno jako \texttt{endTimeInMinutes}. 
-	
+    \end{itemize}
 
     \begin{lstlisting}
 // Previous suggestion
@@ -180,11 +184,13 @@ if (nextStartTimeInMinutes === null || nextStartTimeInMinutes - duration >= endT
     next = nextSuggestion
 }
     \end{lstlisting}
-    \end{itemize}
 
     \item \textbf{Rekurzivní průchod}
-    Pokud žádný slot není nalezen, algoritmus se rekurzivně zavolá pro předchozí/následující rezervaci. Aby se předešlo zacyklení (např. u kruhových vazeb mezi plány), sleduje již navštívené rezervace pomocí množiny \texttt{visited}. 
+    \begin{itemize}
+         
+    \item Pokud žádný slot není nalezen, algoritmus se rekurzivně zavolá pro předchozí/následující rezervaci. Aby se předešlo zacyklení (např. u kruhových vazeb mezi plány), sleduje již navštívené rezervace pomocí množiny \texttt{visited}. 
 
+    \end{itemize}
     \begin{lstlisting}
 if (visited.has(item.PlanId)) {
     return {
@@ -209,8 +215,9 @@ if (prevSuggestion === null && item.Prev !== null) {
 }
 // Same thing for next suggestion
     \end{lstlisting}
+    
 \end{enumerate}
-Systém v průběhu těhto kroků průběžne kontroluje i kapacitu, pomocí proměnné can\_fit, kterou získal z výše zmíněné procedury. 
+Systém v průběhu těchto kroků průběžně kontroluje i kapacitu, pomocí proměnné can\_fit, kterou získal z výše zmíněné procedury. 
 
 Tento přístup kombinuje efektivitu (práce s již načtenými daty) s robustností (rekurzivní pokrytí všech možných kolizí). Zároveň respektuje kapacitu a možnost zakázání kolizí jiných rezervací.
 
@@ -218,10 +225,10 @@ Tento přístup kombinuje efektivitu (práce s již načtenými daty) s robustno
 Jednou z nejobtížnějších funkcí systému je ta poslední. Nejprve je nutné, aby systém přetypoval data z databáze pro účely grafů a poté došlo k vytvoření daného grafu.
 
 \subsection{Frontend}
-Frontend implementace zahrnuje pouze API dotaz pro získání generovaných dat na straně klienta, nastavení hodnot pro vstupní prvky, a přidání tlačítka určeného pro možnost ``Opětovného generování'' sekvence s časovými okny. Toto opětovné generování nebude opětovně odesílat API dotaz, ale zvolí jiný z navrácených průchodů.
+Frontend implementace zahrnuje pouze API dotaz pro získání generovaných dat na straně klienta, nastavení hodnot pro vstupní prvky a přidání tlačítka určeného pro možnost ``Opětovného generování'' sekvence s časovými okny. Toto opětovné generování nebude opětovně odesílat API dotaz, ale zvolí jiný z navrácených průchodů.
 
 \subsection{Získání dat}
-Napříč složitostí problému je SQL dotaz pro databázi relativně přímočarý. Dotaz zahrnuje spojování tabulek přístroje (machine) a rezervace přes jejich asociaci s plánem rezervace. Navíc dotaz využívá podmínkové ošetření a řazení dat podle času. Data z databáze obdržíme prostřednictvím následujícího dotazu:
+Napříč složitostí problému je SQL dotaz pro databázi relativně přímočarý. Dotaz zahrnuje spojování tabulek přístroje (machine) a rezervace přes jejich asociaci s plánem rezervace. Navíc dotaz využívá podmínkového ošetření a řazení dat podle času. Data z databáze obdržíme prostřednictvím následujícího dotazu:
 
 \begin{lstlisting}[language=SQL]
 select * 
@@ -274,7 +281,7 @@ class NodeValue extends Model {
 
 Funkce \texttt{CreateDataset} zpracovává data tím, že přijímá parametry získané z databáze a převede je na datový typ \texttt{NodeValue}. Tyto parametry zahrnují počáteční čas generování, počet osob v rezervaci a typ datasetu, který je reprezentován hodnotou enum \texttt{DataSetType}. Výstupem této funkce je generovaný graf, který se vytváří pomocí funkce \texttt{CreateGraphNodes}.
 
-\texttt{CreateGraphNodes} upravuje dataset založený na zadaných vstupních datech. Pomocí funkce \texttt{prepareData} se pro každý přístroj přidají prázdná časová okna. Funkce \texttt{getCollidingDataSet} a \texttt{getNonCollidingDataSet} se používají k transformaci a filtrování dat. Funkce \texttt{getCollidingDataset} odstraní záznamy, do nichž se zadaný počet lidí v rezervaci již nevejde, dále propojuje tréninky s navazujícími prázdnými intervaly. Naopak, \texttt{getNonCollidingDataSet} poskytuje data zcela bez rezervací. Výsledkem je pole grafových vrcholů se stávajícími hranami. Tyto hrany se vytvářejí mezi všemi možnými sousedními uzly tak, že pokud je konečný čas současného vrcholu menší nebo roven konečnému času jiného vrcholu.
+\texttt{CreateGraphNodes} upravuje dataset založený na zadaných vstupních datech. Pomocí funkce \texttt{prepareData} se pro každý přístroj přidají prázdná časová okna. Funkce \texttt{getCollidingDataSet} a~\texttt{getNonCollidingDataSet} se používají k transformaci a filtrování dat. Funkce \texttt{getCollidingDataset} odstraní záznamy, do nichž se zadaný počet lidí v rezervaci již nevejde, dále propojuje tréninky s navazujícími prázdnými intervaly. Naopak, \texttt{getNonCollidingDataSet} poskytuje data zcela bez rezervací. Výsledkem je pole grafových vrcholů se stávajícími hranami. Tyto hrany se vytvářejí mezi všemi možnými sousedními uzly tak, že pokud je konečný čas současného vrcholu menší nebo roven konečnému času jiného vrcholu.
 
 \begin{lstlisting}
 async CreateDataset(
@@ -359,6 +366,6 @@ walk(
 }
 \end{lstlisting}
 
-Jak lze vidět, tak rekurzivní volání provádíme pouze pokud je možné společně s průměrným časem přístroje se vlést do časového okna sousedícího vrcholu. Postupně měníme současný čas , jež v danou chvíli máme, pro udržení kontextu rezervace. Výsledky průchodu následně vrátíme klientovi.
+Jak lze vidět, tak rekurzivní volání provádíme pouze pokud je možné se s průměrným časem trvání přístroje vejít do časového okna sousedícího vrcholu. Postupně měníme současný čas, jež v danou chvíli máme, pro udržení kontextu rezervace. Výsledky průchodu následně vrátíme klientovi.
 
 Výsledkem kombinace všech těchto metod je pole několika průchodů grafem s měnícím se začátečním přístrojem. Tyto průchody sice vždy trvají stejně dlouho, ale s jiným počátkem (například o 15 minut později). Tímto získáme pro danou chvíli všechny možné optimální způsoby, jakými lze trénink sestavit. Tento výsledek následně vrátíme na frontend, kde se hodnoty uloží do dále konfigurovatelných časových oken, jež jsou využívána v manuální konfiguraci.
