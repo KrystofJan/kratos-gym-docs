@@ -1,5 +1,5 @@
 \chapter{Implementace}
-V předešlých kapitolách byla popsána technologická rozhodnutí, jež byla v průběhu vývoje uskutečněna, analýza klíčových algoritmických komponent systému a návrh infrastruktury, nad kterou je postavena konkrétní implementace těchto klíčových komponent. Tato kapitola podrobně rozebírá právě tuto implementaci. Zabývá se kompletním popisem třech systémů: doporučování přístrojů, doporučení dostupných časových oken, a generování tréninkových plánů.
+V předešlých kapitolách byla popsána technologická rozhodnutí, jež byla v průběhu vývoje uskutečněna, analýza klíčových algoritmických komponent systému a návrh infrastruktury, nad kterou je postavena konkrétní implementace těchto klíčových komponent. Tato kapitola podrobně rozebírá právě tuto implementaci. Zabývá se kompletním popisem tří systémů: doporučování přístrojů, doporučení dostupných časových oken a generování tréninkových plánů.
 
 \section{Doporučení přístrojů}
 Jak již bylo popsáno v kapitole \textbf{Teoretická analýza}, tak koncept doporučení přístrojů není příliš složitý. Co se praktické implementace týče, tak je to obdobné.
@@ -76,7 +76,7 @@ Přestože snahy o zavedení výše uvedeného systému jsou lákavé kvůli fas
 \subsection{Backend}
 Na backendu algoritmus pracuje s daty získanými z databáze, která obsahují nejen plány rezervací pro daný přístroj, ale také informace o časových oknech předchozích/následujících rezervací a kapacitních omezeních. Cílem je najít nejbližší volný interval stejné délky jako požadované časové okno, a to buď před první kolidující rezervací, nebo za poslední kolidující rezervací, s ohledem na možnost povolení kolizí.
 
-Data jsou získávána pomocí následujícího \texttt{sql} dotazu:
+Data jsou získávána pomocí následujícího \texttt{SQL} dotazu:
 \begin{lstlisting}[language=SQL]
 SELECT pm.*,
   CASE
@@ -281,7 +281,7 @@ class NodeValue extends Model {
 
 Funkce \texttt{CreateDataset} zpracovává data tím, že přijímá parametry získané z databáze a převede je na datový typ \texttt{NodeValue}. Tyto parametry zahrnují počáteční čas generování, počet osob v rezervaci a typ datasetu, který je reprezentován hodnotou enum \texttt{DataSetType}. Výstupem této funkce je generovaný graf, který se vytváří pomocí funkce \texttt{CreateGraphNodes}.
 
-\texttt{CreateGraphNodes} upravuje dataset založený na zadaných vstupních datech. Pomocí funkce \texttt{prepareData} se pro každý přístroj přidají prázdná časová okna. Funkce \texttt{getCollidingDataSet} a~\texttt{getNonCollidingDataSet} se používají k transformaci a filtrování dat. Funkce \texttt{getCollidingDataset} odstraní záznamy, do nichž se zadaný počet lidí v rezervaci již nevejde, dále propojuje tréninky s navazujícími prázdnými intervaly. Naopak, \texttt{getNonCollidingDataSet} poskytuje data zcela bez rezervací. Výsledkem je pole grafových vrcholů se stávajícími hranami. Tyto hrany se vytvářejí mezi všemi možnými sousedními uzly tak, že pokud je konečný čas současného vrcholu menší nebo roven konečnému času jiného vrcholu.
+\texttt{CreateGraphNodes} upravuje dataset založený na zadaných vstupních datech. Pomocí funkce \texttt{prepareData} se pro každý přístroj přidají prázdná časová okna. Funkce \texttt{getCollidingDataSet} a~\texttt{getNonCollidingDataSet} se používají k transformaci a filtrování dat. Funkce \texttt{getCollidingDataset} odstraní záznamy, do nichž se zadaný počet lidí v rezervaci již nevejde, dále propojuje tréninky s navazujícími prázdnými intervaly. Naopak, \texttt{getNonCollidingDataSet} poskytuje data zcela bez rezervací. Výsledkem je pole grafových vrcholů se stávajícími hranami. Tyto hrany se vytvářejí mezi všemi možnými sousedními uzly, pokud je konečný čas současného vrcholu menší nebo roven konečnému času jiného vrcholu.
 
 \begin{lstlisting}
 async CreateDataset(

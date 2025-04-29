@@ -1,8 +1,8 @@
 \chapter{Retrospektiva} \label{retrospective}
 
-Tato bakalářská práce byla z mého pohledu velmi přínosná. Nicméně stejně jako každý vývoj se také tento potýkal s nejen pár problémy a to nejen implementačními, ale i určitými rozpory s ohledem na preference a technologická rozhodnutí. V této kapitole budou tyto překážky popsány společně se způsoby, jakými byly řešeny.
+Tato bakalářská práce byla z mého pohledu velmi přínosná. Nicméně stejně jako každý vývoj se také tento potýkal s nejen pár problémy, a to nejen implementačními, ale i určitými rozpory s ohledem na preference a technologická rozhodnutí. V této kapitole budou tyto překážky popsány společně se způsoby, jakými byly řešeny.
 
-\section{Technologické Problémy}
+\section{Technologické problémy}
 
 Jeden z více osobních problémů, které nastaly, byla brzká technologická rozhodnutí. Důvody volby těchto technologií byly popsány v kapitole Využité technologie. Zde jsou popsány konkrétní překážky, jež byly spojovány s těmito rozhodnutími.
 
@@ -15,7 +15,7 @@ Dynamicky typované jazyky jsou náchylné na větší chybovost a menší kvali
 \item[Chybějící vlastnosti jazyka] 
 Jelikož JavaScript je dynamicky typovaný jazyk, chybí v něm koncepty jako například enum, interface a mnoho dalších, které například TS dodává \cite{typescriptlangHandbookEnums, typescriptlangHandbookInterfaces}.
 \item[Řešení výjimek]
-JS má oproti více moderním programovacím jazykům mě osobně nevyhovující systém odchytávání chyb. JS používá systém try/catch/finally, který se v moderních jazycích postupně nahrazuje konceptem Errors as values. Tato nevýhoda je pouze osobní preferencí, ale~tato preference je podmíněna. Pokud například mám určitou funkci, při jejímž průběhu může nastat chyba, tak v jazycích, které mají chybovatelné typy (například Result enum v Rustu), či funkce s více vracejícími hodnotami (jako například v Go), se jednoduše vrátí jiný výsledek. Díky tomuto přístupu je programátor nucen chybu ošetřit, aby se ujistil o existenci správného výsledku. To vede k robustnějšímu kódu. Pokud ale můžeme jednoduše výjimku vyhodit, čímž průběh programu narušíme a funkce stále vrací stejný typ, není přímo z definice této funkce jasné, zda může vyhodit výjimku. Jsme v tu chvíli nuceni tuto záležitost odchytávat při tom, jak na ni narazíme. To se stává problémem, když interagujeme s námi nenapsaným kódem.
+JS má oproti více moderním programovacím jazykům mně osobně nevyhovující systém odchytávání chyb. JS používá systém try/catch/finally, který se v moderních jazycích postupně nahrazuje konceptem Errors as values. Tato nevýhoda je pouze osobní preferencí, ale~tato preference je podmíněna. Pokud například mám určitou funkci, při jejímž průběhu může nastat chyba, tak v jazycích, které mají chybovatelné typy (například Result enum v Rustu), či funkce s více vracejícími hodnotami (jako například v Go), se jednoduše vrátí jiný výsledek. Díky tomuto přístupu je programátor nucen chybu ošetřit, aby se ujistil o existenci správného výsledku. To vede k robustnějšímu kódu. Pokud ale můžeme jednoduše výjimku vyhodit, čímž průběh programu narušíme a funkce stále vrací stejný typ, není přímo z definice této funkce jasné, zda může vyhodit výjimku. Jsme v tu chvíli nuceni tuto záležitost odchytávat při tom, jak na ni narazíme. To se stává problémem, když interagujeme s námi nenapsaným kódem.
 \end{description}
 
 Po několika měsících vývoje nastalo důležité technologické rozhodnutí ohledně přepsání celého backendu do jazyka TS. Toto rozhodnutí bylo klíčové pro další vývoj, jelikož vyřešilo dva ze tří problémů, které jsem s JavaScriptem měl.

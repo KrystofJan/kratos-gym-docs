@@ -28,11 +28,11 @@ Pro lepší orientaci a detailnější uvedení do kontextu je potřeba definova
     \end{itemize}
   \item Zákazník si zvolí, zda chce konfigurovat časová okna manuálně.
       \begin{itemize}
-        \item Pokud ne, tak systém zablokuje možnost vybírat pořadí přístrojů. Zákazník si vybere počáteční čas a systém vygeneruje jednotlivá časová okna, které následně doplní do jednotlivých položek. Zde se odehrává \textbf{Generování času pro trénink}. Dále může časová okna ještě poupravit. 
+        \item Pokud ne, tak systém zablokuje možnost vybírat pořadí přístrojů. Zákazník si vybere počáteční čas a systém vygeneruje jednotlivá časová okna, která následně doplní do jednotlivých položek. Zde se odehrává \textbf{Generování času pro trénink}. Dále může časová okna ještě poupravit. 
         \item Pokud ano, tak uživatel zvolí pořadí přístrojů. Následně zákazník volí časová okna pro jednotlivé přístroje. 
     \end{itemize}
     
-  \item Během manuálního vkládání/upravování časových oken systém kontroluje, zda v zadaném časovém okně je kolize s jinou rezervací. Pokud je, tak systém vyhledá nejbližší volné stejné délky před a po zvoleném úseku. Zde se bude odehrávat \textbf{Doporučení nejbližšího dostupného času}.
+  \item Během manuálního vkládání/upravování časových oken systém kontroluje, zda v zadaném časovém okně je kolize s jinou rezervací. Pokud je, tak systém vyhledá nejbližší volné okno stejné délky před a po zvoleném úseku. Zde se bude odehrávat \textbf{Doporučení nejbližšího dostupného času}.
   \item Nakonec zákazník zvolí dodatečné informace, jako například kategorie tréninku atd.
 \end{itemize}
 
@@ -82,7 +82,7 @@ Data v grafu vycházejí z využití vybraných přístrojů pro daný den poč�
 
 Jakmile systém získá záznamy o vytížení přístrojů, je potřeba tato data upravit do požadovaného formátu. Tento formát musí obsahovat počáteční a koncový čas časového okna, který reprezentuje. Dále je potřeba  zachovat informace o přístroji a rezervaci. Následně tato data systém upraví ještě jednou a to tím způsobem, že si doplní záznamy o mezery, tj. časová okna, přes která nikdo nemá vytvořenou rezervaci pro daný přístroj. Tyto záznamy tedy nebudou obsahovat rezervaci. 
 
-Data budeme tedy následovně upravovat na základě vstupních hodnot poskytnutých uživatelem. Konkrétně, za uživatel povolí kolize s ostatními uživateli, kteří tuto možnost také povolili.
+Data budeme tedy následovně upravovat na základě vstupních hodnot poskytnutých uživatelem. Konkrétně, zda uživatel povolí kolize s ostatními uživateli, kteří tuto možnost také povolili.
 
 Pokud uživatel kolize nepovolí, tak se nabízí zcela jednoduché řešení. Z předem připravených dat jednoduše odstraníme ty možnosti, které obsahují rezervaci, tj. někdo přes toto časové okno již rezervaci má. Tyto data budou tedy výslednými vrcholy pro tento scénář.
 

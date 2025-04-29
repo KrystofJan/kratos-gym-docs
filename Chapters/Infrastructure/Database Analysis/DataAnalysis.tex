@@ -48,7 +48,7 @@ Tato sekce se věnuje popisu nejdůležitějších tabulek, které můžeme vid�
             \hline
             max\_people       & INTEGER   &  -  & -                 & Ne & Maximální počet lidí na stroji \\
             \hline
-            avg\_time\_taken    & INTEGER   &     & -                 & Ne & Průměrný trávený čas \\
+            avg\_time\_taken    & INTEGER   &     & -                 & Ne & Průměrně trávený čas \\
             \hline
             popularity\_score & INTEGER      &  -    & -                 & Ne &  Počet rezervací \\
         \hline
@@ -88,7 +88,7 @@ Tato sekce se věnuje popisu nejdůležitějších tabulek, které můžeme vid�
         \hline
             start\_time     & TIME      &  -    & -                 & Ne & Čas začátku \\
         \hline
-            end\_time       & TIME      &  -    & -                 & Ne & čas konce \\
+            end\_time       & TIME      &  -    & -                 & Ne & Čas konce \\
         \hline
             can\_disturb          & BOOLEAN   &  =    & -                 & Ne & povolení kolizí \\
         \hline
@@ -96,7 +96,7 @@ Tato sekce se věnuje popisu nejdůležitějších tabulek, které můžeme vid�
 \end{table}
 
 \subsubsection{Procedury a funkce}
-Konkrétní procedury a funkce budou popsány v pozdější části této práce. Klíčovým aspektem návrhu je určení, které operace budou efektivnější realizovat na úrovni databáze a které na aplikační vrstvě. Toto rozhodnutí je zásadní, protože ovlivňuje nejen efektivitu a přehlednost řešení, ale také jeho dlouhodobou udržovatelnost.
+Konkrétní procedury a funkce budou popsány v pozdější části této práce. Klíčovým aspektem návrhu je určení, které operace bude efektivnější realizovat na úrovni databáze a které na aplikační vrstvě. Toto rozhodnutí je zásadní, protože ovlivňuje nejen efektivitu a přehlednost řešení, ale také jeho dlouhodobou udržovatelnost.
 
 Procedury a funkce jsou v kontextu navržené architektury využity pro extrakci komplexních datových struktur, nejsou však aplikovány pro jiné operace, jako například manipulace s daty, nebo~složitější transakce. Toto rozhodnutí vychází ze dvou východisek:
 

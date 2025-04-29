@@ -8,7 +8,7 @@ Kořenový adresář je uspořádán následujícím způsobem:
 \subsection{Root složka}
 \begin{description}
     \item[db] 
-    Zde se ukládají SQL scripty pro vytvoření databáze, vkládání testovacích dat další podobné scripty.
+    Zde se ukládají SQL scripty pro vytvoření databáze, vkládání testovacích dat a další podobné scripty.
     \item[tests]  
     Zde jsou uloženy testy napsány v pythonu pomocí knihovny pytest. Stručný popis testování můžete nalézt v kapitole \ref{testing&cicd}
     \item[src] 
@@ -31,7 +31,7 @@ Složka src centralizuje veškerou logiku Express.js HTTP serveru a je strukturo
     \item[router] 
     Router definuje všechny HTTP cesty, které API nabízí, a volá specifické routery pro jednotlivé endpointy.
     \item[utils] 
-    Složka utils obsahuje pomocné funkce a typy, které usnadňují práci. Je zde například typ IDictionary (typová definice mapy pro libovolné datové typy), funkce safeAwait (funkce pro zjednodušení práce s try-catch. Umožňuje práci s chybami v podobném stylu jako v jazyce Go, což přispívá k přehlednosti kódu), definici loggeru (využívá PINO knihovnu) a pod.
+    Složka utils obsahuje pomocné funkce a typy, které usnadňují práci. Je zde například typ IDictionary (typová definice mapy pro libovolné datové typy), funkce safeAwait (funkce pro zjednodušení práce s try-catch. Umožňuje práci s chybami v podobném stylu jako v jazyce Go, což přispívá k přehlednosti kódu), definici loggeru (využívá PINO knihovnu) a podobně.
     \item[app.ts] 
     Soubor app.ts slouží jako vstupní bod aplikace. Jeho hlavní funkcí je vytvoření instance frameworku express.js
 \end{description} 
@@ -52,7 +52,7 @@ Tento příklad demonstruje definiční datový model \texttt{Foo} s následují
 
 Model zároveň ilustruje aplikaci dekorátorů (např. \texttt{@PrimaryKey}, \texttt{@ForeignKey}, \texttt{@Column}, atd.), které rozšiřují funkcionalitu modelu o metadata nutná pro obecné požadavky na databázi. 
 
-Následující příklad bude popisován dále v popisech dalších bodech.
+Následující příklad bude popisován dále v popisech dalších bodů.
 \subsubsection{Definice koncových cest - routes}
 Obsahuje definice HTTP cest, které se volají v globálním routeru. Tyto definice obvykle pouze směrují požadavky na příslušný controller.
 
@@ -82,4 +82,4 @@ Pokud nejsou obecné operace pro práci v databázi pro potřebnou akci dostate�
 \texttt{SelectSpecific} je jedna z funkcí třídy \texttt{BasicQueryDatabase}, která využívá metadata navázaná na objekt pomocí dekorátorů. Jak lze vidět, funkce se převážně jen stará o sestavení SQL dotazu, vrácení získaných dat a uzavření spojení s databází.
 
 \subsubsection{error-handler}
-Slouží jako mapper, který na základě vrácených chyb sestavuje odpovídající HTTP odpovědi. Pod pokličkou se jedná o hash mapu, která obsahuje typy chyb se status kódy. Je volán z controlleru.
+Slouží jako mapper, který na základě vrácených chyb sestavuje odpovídající HTTP odpovědi. V zásadě se jedná o hash mapu, která obsahuje typy chyb se status kódy. Je volán z controlleru.

@@ -7,13 +7,13 @@ Ve vývoji softwaru se často setkáváme s různými druhy chyb, včetně těch
 Testy jsou implementovány pouze pro backendovou část bakalářské práce. Zpracování je díky pečlivému odchycení chyb a vracení správných status kódů vymezeno pouze na poslání dotazu na API a~následné kontrole daného HTTP kódu. Testy jsou implementovány v programovacím jazyce \texttt{Python} s pomocí knihovny \texttt{pytest}.
 
 \section{CI/CD}
-CI/CD představuje sérii kroků provedených automaticky při změnách v kódu. V této práci byla tato vývojová filozofie adaptována v obou formách pomocí github actions. viz \ref{techstack} Využité technologie. Všechny tyto technologie jsou úzce spojené s verzovacími koncepty, jako je koncept různých vývojových větví, pull requestů a pod. Tyto koncepty jsou specifické pro zvolený verzovací systém git a cloudové uložiště GitHub. Celá praktická část této bakalářské práce je uložena na GitHubu \url{https://github.com/KrystofJan/kratos-gym}
+CI/CD představuje sérii kroků provedených automaticky při změnách v kódu. V této práci byla tato vývojová filozofie adaptována v obou formách pomocí github actions. viz \ref{techstack} Využité technologie. Všechny tyto technologie jsou úzce spojené s verzovacími koncepty, jako je koncept různých vývojových větví, pull requestů apod. Tyto koncepty jsou specifické pro zvolený verzovací systém git a cloudové uložiště GitHub. Celá praktická část této bakalářské práce je uložena na GitHubu \url{https://github.com/KrystofJan/kratos-gym}
 
 \subsection{CD - Continuous deployment}
 Co se kontinuálního nasazení kódu týče, tak řeší tvorbu Docker kontejneru. Tento kontejner je vytvořen jinak pro jiné účely. Když je automatické nasazení iniciováno pomocí vytvoření nebo~úprav pull requestu, je generován a odeslán tag, který odpovídá identifikačnímu číslu daného pull requestu. Pokud se jedná o sloučení do hlavní vývojové větve main, tak se jedná o tag latest.
 
 \subsection{CI - Continuous integration}
-V rámci kontinuální integrace se řeší spuštění testů pro API. Obecně jde o proces zajištění splnění funkčních i nefunkčních parametrů, jež program aplikuje. Mezi funkční parametry se zahrnuje samotná funkčnost kódu a splnění nároků implementované funkce. Nefunkční parametry zahrnují věci obecné ke kvalitě kódu, linting, formátování, a pod.
+V rámci kontinuální integrace se řeší spuštění testů pro API. Obecně jde o proces zajištění splnění funkčních i nefunkčních parametrů, jež program aplikuje. Mezi funkční parametry se zahrnuje samotná funkčnost kódu a splnění nároků implementované funkce. Nefunkční parametry zahrnují věci obecné ke kvalitě kódu, linting, formátování, apod.
 
 \section{Git \& Github}
 Jelikož jsou všechny tyto koncepty spojené s verzováním kódu, je potřeba zmínit, že pro aplikace těchto postupů a verzování kódu byly využity technologie Git a GitHub. Pro bližší popis těchto technologií se lze odkázat do kapitoly \ref{techstack}.
